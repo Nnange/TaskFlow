@@ -1,9 +1,11 @@
 import axios from 'axios'
+
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 // Define the base URL for your Spring Boot API
-const API_BASE_URL = 'http://localhost:8080/api'
+// const API_BASE_URL = 'http://localhost:8080/api'
 // Define the Todo type
 export interface Todo {
-  id: string
+  id: number
   text: string
   completed: boolean
 }
