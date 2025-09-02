@@ -22,6 +22,10 @@ public class TodoController {
 
     @PostMapping
     public Todo add(@RequestBody Todo todo){
+        if (todo.getTask() == null || todo.getTask().trim().isEmpty()) {
+            throw new IllegalArgumentException("Task cannot be empty");
+        }
+        todo.setCompleted(false); // default
         return todoService.addTodo(todo);
     }
 
@@ -33,6 +37,12 @@ public class TodoController {
     @DeleteMapping("/{id}")
     public void delete(@PathVariable Long id){
         todoService.deleteTodo(id);
+    }
+
+    // Clear all completed todos
+    @DeleteMapping("/completed")
+    public void deleteAllCompleted(){
+        todoService.clearCompletedTodos();
     }
 
 }

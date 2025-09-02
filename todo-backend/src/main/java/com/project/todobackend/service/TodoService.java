@@ -2,6 +2,7 @@ package com.project.todobackend.service;
 
 import com.project.todobackend.entity.Todo;
 import com.project.todobackend.repository.TodoRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -34,5 +35,9 @@ public class TodoService {
     }
     public void deleteTodo(Long id){
         todoRepository.deleteById(id);
+    }
+    @Transactional
+    public void clearCompletedTodos(){
+        todoRepository.deleteByCompletedTrue();
     }
 }
