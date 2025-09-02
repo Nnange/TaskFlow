@@ -2,7 +2,7 @@ import React from 'react'
 import { TodoItem } from './TodoItem'
 interface Todo {
   id: number
-  text: string
+  task: string
   completed: boolean
 }
 interface TodoListProps {

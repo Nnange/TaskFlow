@@ -3,13 +3,10 @@ import Header from "./Header";
 import TodoInput from "./TodoInput";
 import { useEffect, useState } from "react";
 import { TodoList } from "./TodoList";
-import { todoApi, Todo as TodoType } from "../services/api";
+import { todoApi } from "../services/api";
+import {Todo as TodoType} from '../interfaces/Todo'
 
-type Todo = {
-  id: number
-  text: string
-  completed: boolean
-}
+
 type FilterType = 'all' | 'active' | 'completed';
 
 
@@ -36,81 +33,81 @@ function TodoCard() {
     fetchTodos()
   }, [])
 
-  const addTodo = (text: string) => {
+  // const addTodo = (text: string) => {
+  //   if (text.trim()) {
+  //     setTodos([
+  //       ...todos,
+  //       {
+  //         id: Date.now(),
+  //         text,
+  //         completed: false,
+  //       },
+  //     ])
+  //   }
+  // }
+  // const toggleTodo = (id: number) => {
+  //   setTodos(
+  //     todos.map((todo) =>
+  //       todo.id === id
+  //         ? {
+  //             ...todo,
+  //             completed: !todo.completed,
+  //           }
+  //         : todo,
+  //     ),
+  //   )
+  // }
+  // const deleteTodo = (id: number) => {
+  //   setTodos(todos.filter((todo) => todo.id !== id))
+  // }
+  // const clearCompleted = () => {
+  //   setTodos(todos.filter((todo) => !todo.completed))
+  // }
+
+  const addTodo = async (text: string) => {
     if (text.trim()) {
-      setTodos([
-        ...todos,
-        {
-          id: Date.now(),
-          text,
-          completed: false,
-        },
-      ])
+      try {
+        setError(null)
+        const newTodo = await todoApi.createTodo(text)
+        setTodos([...todos, newTodo])
+      } catch (err) {
+        console.error('Failed to add todo:', err)
+        setError('Failed to add todo. Please try again.')
+      }
     }
   }
-  const toggleTodo = (id: number) => {
-    setTodos(
-      todos.map((todo) =>
-        todo.id === id
-          ? {
-              ...todo,
-              completed: !todo.completed,
-            }
-          : todo,
-      ),
-    )
+  const toggleTodo = async (id: number) => {
+    try {
+      setError(null)
+      const todoToUpdate = todos.find((todo) => todo.id === id)
+      if (!todoToUpdate) return
+      const updatedTodo = await todoApi.toggleTodo(todoToUpdate)
+      setTodos(todos.map((todo) => (todo.id === id ? updatedTodo : todo)))
+    } catch (err) {
+      console.error('Failed to update todo:', err)
+      setError('Failed to update todo. Please try again.')
+    }
   }
-  const deleteTodo = (id: number) => {
-    setTodos(todos.filter((todo) => todo.id !== id))
+  const deleteTodo = async (id: number) => {
+    try {
+      setError(null)
+      await todoApi.deleteTodo(id)
+      setTodos(todos.filter((todo) => todo.id !== id))
+    } catch (err) {
+      console.error('Failed to delete todo:', err)
+      setError('Failed to delete todo. Please try again.')
+    }
   }
-  const clearCompleted = () => {
-    setTodos(todos.filter((todo) => !todo.completed))
+  const clearCompleted = async () => {
+    try {
+      setError(null)
+      await todoApi.clearCompleted()
+      setTodos(todos.filter((todo) => !todo.completed))
+    } catch (err) {
+      console.error('Failed to clear completed todos:', err)
+      setError('Failed to clear completed todos. Please try again.')
+    }
   }
-
-  //  const addTodo = async (text: string) => {
-  //   if (text.trim()) {
-  //     try {
-  //       setError(null)
-  //       const newTodo = await todoApi.createTodo(text)
-  //       setTodos([...todos, newTodo])
-  //     } catch (err) {
-  //       console.error('Failed to add todo:', err)
-  //       setError('Failed to add todo. Please try again.')
-  //     }
-  //   }
-  // }
-  // const toggleTodo = async (id: string) => {
-  //   try {
-  //     setError(null)
-  //     const todoToUpdate = todos.find((todo) => todo.id === id)
-  //     if (!todoToUpdate) return
-  //     const updatedTodo = await todoApi.toggleTodo(todoToUpdate)
-  //     setTodos(todos.map((todo) => (todo.id === id ? updatedTodo : todo)))
-  //   } catch (err) {
-  //     console.error('Failed to update todo:', err)
-  //     setError('Failed to update todo. Please try again.')
-  //   }
-  // }
-  // const deleteTodo = async (id: string) => {
-  //   try {
-  //     setError(null)
-  //     await todoApi.deleteTodo(id)
-  //     setTodos(todos.filter((todo) => todo.id !== id))
-  //   } catch (err) {
-  //     console.error('Failed to delete todo:', err)
-  //     setError('Failed to delete todo. Please try again.')
-  //   }
-  // }
-  // const clearCompleted = async () => {
-  //   try {
-  //     setError(null)
-  //     await todoApi.clearCompleted()
-  //     setTodos(todos.filter((todo) => !todo.completed))
-  //   } catch (err) {
-  //     console.error('Failed to clear completed todos:', err)
-  //     setError('Failed to clear completed todos. Please try again.')
-  //   }
-  // }
 
 
   const filteredTodos = todos.filter((todo) => {

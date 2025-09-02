@@ -6,7 +6,7 @@ import { MdCheck } from "react-icons/md";
 
 interface Todo {
   id: number
-  text: string
+  task: string
   completed: boolean
 }
 interface TodoItemProps {
@@ -27,7 +27,7 @@ export const TodoItem = ({ todo, onToggle, onDelete }: TodoItemProps) => {
         <span
           className={`text-gray-800 truncate ${todo.completed ? 'line-through text-gray-400' : ''}`}
         >
-          {todo.text}
+          {todo.task}
         </span>
       </div>
       <button

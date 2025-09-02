@@ -1,14 +1,10 @@
 import axios from 'axios'
+import { Todo } from '../interfaces/Todo'
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 
-// Define the Todo type
-export interface Todo {
-  id: number
-  text: string
-  completed: boolean
-}
+
 // Create an axios instance with default config
 const api = axios.create({
   baseURL: API_BASE_URL,
@@ -20,28 +16,32 @@ const api = axios.create({
 export const todoApi = {
   // Get all todos
   getAllTodos: async (): Promise<Todo[]> => {
-    const response = await api.get('/todos')
+    const response = await api.get('/api/todos')
     return response.data
   },
   // Add a new todo
   createTodo: async (text: string): Promise<Todo> => {
-    const response = await api.post('/todos', { text, completed: false })
+    console.log('Creating todo with text:', text)
+    const response = await api.post('/api/todos', {
+      task: text, 
+      completed: false 
+    })
     return response.data
   },
   // Toggle todo completion status
   toggleTodo: async (todo: Todo): Promise<Todo> => {
-    const response = await api.put(`/todos/${todo.id}`, {
+    const response = await api.put(`/api/todos/${todo.id}`, {
       ...todo,
       completed: !todo.completed,
     })
     return response.data
   },
   // Delete a todo
-  deleteTodo: async (id: string): Promise<void> => {
-    await api.delete(`/todos/${id}`)
+  deleteTodo: async (id: number): Promise<void> => {
+    await api.delete(`/api/todos/${id}`)
   },
   // Clear all completed todos
   clearCompleted: async (): Promise<void> => {
-    await api.delete('/todos/completed')
+    await api.delete('/api/todos/completed')
   },
 }
