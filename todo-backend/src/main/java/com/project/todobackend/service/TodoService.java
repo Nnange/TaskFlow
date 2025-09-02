@@ -1,11 +1,14 @@
 package com.project.todobackend.service;
 
+import com.project.todobackend.DTOs.TodoDTO;
 import com.project.todobackend.entity.Todo;
+import com.project.todobackend.mappers.TodoMapper;
 import com.project.todobackend.repository.TodoRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 /*
 Service Layer → keeps business logic separate from controllers.
@@ -22,16 +25,21 @@ public class TodoService {
         this.todoRepository = todoRepository;
     }
 
-    public List<Todo> getAllTodos() {
-        return todoRepository.findAll();
+    public List<TodoDTO> getAllTodos() {
+        return todoRepository.findAll()
+                .stream()
+                .map(TodoMapper::toDTO)
+                .collect(Collectors.toList());
     }
 
-    public Todo addTodo(Todo todo){
-        return todoRepository.save(todo);
+    public TodoDTO addTodo(TodoDTO dto){
+        Todo saved = todoRepository.save(TodoMapper.toEntity(dto));
+        return TodoMapper.toDTO(saved);
     }
-    public Todo updateTodo(Long id, Todo updated){
-        updated.setId(id);
-        return todoRepository.save(updated);
+    public TodoDTO updateTodo(Long id, TodoDTO updatedDto){
+        updatedDto.setId(id);
+        Todo saved = todoRepository.save(TodoMapper.toEntity(updatedDto));
+        return TodoMapper.toDTO(saved);
     }
     public void deleteTodo(Long id){
         todoRepository.deleteById(id);

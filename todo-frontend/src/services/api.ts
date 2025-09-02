@@ -21,7 +21,6 @@ export const todoApi = {
   },
   // Add a new todo
   createTodo: async (text: string): Promise<Todo> => {
-    console.log('Creating todo with text:', text)
     const response = await api.post('/api/todos', {
       task: text, 
       completed: false 

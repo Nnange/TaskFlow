@@ -1,5 +1,6 @@
 package com.project.todobackend.controller;
 
+import com.project.todobackend.DTOs.TodoDTO;
 import com.project.todobackend.entity.Todo;
 import com.project.todobackend.service.TodoService;
 import org.springframework.web.bind.annotation.*;
@@ -16,22 +17,22 @@ public class TodoController {
     }
 
     @GetMapping
-    public List<Todo> all() {
+    public List<TodoDTO> all() {
         return todoService.getAllTodos();
     }
 
     @PostMapping
-    public Todo add(@RequestBody Todo todo){
-        if (todo.getTask() == null || todo.getTask().trim().isEmpty()) {
+    public TodoDTO add(@RequestBody TodoDTO dto){
+        if (dto.getTask() == null || dto.getTask().trim().isEmpty()) {
             throw new IllegalArgumentException("Task cannot be empty");
         }
-        todo.setCompleted(false); // default
-        return todoService.addTodo(todo);
+        dto.setCompleted(false); // default
+        return todoService.addTodo(dto);
     }
 
     @PutMapping("/{id}")
-    public Todo update(@PathVariable Long id, @RequestBody Todo todo){
-        return todoService.updateTodo(id, todo);
+    public TodoDTO update(@PathVariable Long id, @RequestBody TodoDTO updatedDto){
+        return todoService.updateTodo(id, updatedDto);
     }
 
     @DeleteMapping("/{id}")
