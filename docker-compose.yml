@@ -1,0 +1,32 @@
+version: "3.9"
+
+services:
+  backend:
+    build:
+      context: ./todo-backend
+      dockerfile: Dockerfile
+    image: todo-backend:latest
+    container_name: todo_backend
+    environment:
+      - SPRING_PROFILES_ACTIVE=${SPRING_PROFILE:-dev}
+    depends_on:
+      - frontend
+    ports:
+      - "9091:9091"
+    networks:
+      - football_football-network
+
+  frontend:
+    image: todo-frontend:latest
+    build:
+      context: ./todo-frontend
+      dockerfile: Dockerfile
+    container_name: todo_frontend
+    ports:
+      - "3001:3001"
+    networks:
+      - football_football-network
+
+networks:
+  football_football-network:
+    external: true
