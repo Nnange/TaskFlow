@@ -1,8 +1,13 @@
 # Build step
-FROM node:20 as build
+FROM node:22.14.0-alpine
+
+# Set working directory
 WORKDIR /app
-COPY package*.json ./
+
+# Copy package files and install dependencies
+COPY package.json package-lock.json* ./
 RUN npm install
+
 COPY . .
 RUN npm run build
 

@@ -1,21 +1,27 @@
-# 1. Build stage
-FROM maven:3.9.6-eclipse-temurin-21 AS build
+# Spring Boot Dockerfile
+FROM eclipse-temurin:21 AS build
+# Install Maven
+RUN apt-get update && \
+    apt-get install -y maven && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
+# Verify Maven installation testing build trigger
+RUN mvn -v
 WORKDIR /app
 COPY pom.xml .
 COPY src ./src
 RUN mvn clean package -DskipTests
 
 # 2. Runtime stage
-FROM eclipse-temurin:21-jdk-jammy
+FROM eclipse-temurin:21-jre
+
 WORKDIR /app
 
-# Copy built JAR
 COPY --from=build /app/target/*.jar app.jar
 
-# Expose backend port
 EXPOSE 9091
 
-# Use SPRING_PROFILES_ACTIVE from environment (default: local)
-ENTRYPOINT ["java", "-jar", "app.jar"]
+ENTRYPOINT ["java", "-jar", "-Dspring.profiles.active=${SPRING_PROFILE}", "app.jar"]
 
 

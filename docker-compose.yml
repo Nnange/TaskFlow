@@ -8,11 +8,12 @@ services:
     image: todo-backend:latest
     container_name: todo_backend
     environment:
-      - SPRING_PROFILES_ACTIVE=${SPRING_PROFILE:-dev}
+      - SPRING_PROFILE=${SPRING_PROFILE:-dev}
     depends_on:
       - frontend
     ports:
       - "9091:9091"
+    restart: unless-stopped
     networks:
       - football_football-network
 
@@ -23,7 +24,8 @@ services:
       dockerfile: Dockerfile
     container_name: todo_frontend
     ports:
-      - "3001:3001"
+      - "3001:80"
+    restart: unless-stopped
     networks:
       - football_football-network
 
