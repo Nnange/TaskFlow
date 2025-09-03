@@ -1,8 +1,14 @@
 pipeline {
     agent any
 
+    parameters {
+        choice(name: 'PROFILE', choices: ['local', 'dev', 'prod'], description: 'Spring profile to use')
+    }
+
     environment {
         DOCKER_REGISTRY = "localhost"   // if you set up local registry, otherwise skip
+        FRONTEND_DIR = "todo-frontend"
+        BACKEND_DIR = "todo-backend"
         FRONTEND_IMAGE = "todo-frontend:latest"
         BACKEND_IMAGE = "todo-backend:latest"
         SPRING_PROFILE = "${PROFILE ?: 'dev'}"   // Jenkins param fallback
@@ -16,19 +22,26 @@ pipeline {
             }
         }
 
-        stage('Build Frontend') {
+        // stage('Build Frontend') {
+        //     steps {
+        //         dir('frontend') {
+        //             sh 'docker build -t $FRONTEND_IMAGE .'
+        //         }
+        //     }
+        // }
+
+        stage('Build Backend') {
             steps {
-                dir('frontend') {
-                    sh 'docker build -t $FRONTEND_IMAGE .'
+                dir(BACKEND_DIR) {
+                    sh 'mvn clean package -DskipTests'
                 }
             }
         }
 
-        stage('Build Backend') {
+        stage('Build Docker Images') {
             steps {
-                dir('backend') {
-                    sh 'docker build -t $BACKEND_IMAGE .'
-                }
+                // Build all services defined in docker-compose.yml
+                sh 'docker compose build'
             }
         }
 
