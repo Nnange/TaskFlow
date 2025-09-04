@@ -22,13 +22,14 @@ pipeline {
             }
         }
 
-        // stage('Build Frontend') {
-        //     steps {
-        //         dir('frontend') {
-        //             sh 'docker build -t $FRONTEND_IMAGE .'
-        //         }
-        //     }
-        // }
+        stage('Build Frontend') {
+            steps {
+                dir(FRONTEND_DIR) {
+                    sh 'npm install'
+                    sh 'docker build -t $FRONTEND_IMAGE .'
+                }
+            }
+        }
 
         stage('Build Backend') {
             steps {
