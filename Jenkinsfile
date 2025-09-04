@@ -31,7 +31,7 @@ pipeline {
         stage('Build Frontend') {
             steps {
                 dir(FRONTEND_DIR) {
-                    sh 'npm install'
+                    // sh 'npm install'
                     sh 'docker build -t $FRONTEND_IMAGE .'
                 }
             }
@@ -49,8 +49,8 @@ pipeline {
                     sh '''
                         echo "spring.datasource.password=${SPRING_DATASOURCE_PASSWORD}" > src/main/resources/secrets.properties
                     '''
-                    sh 'mvn clean'  
-                    sh 'mvn package -DskipTests'
+                    // sh 'mvn clean'  
+                    // sh 'mvn package -DskipTests'
                     sh 'docker build -t ${BACKEND_IMAGE} .'
                     }
                 }
