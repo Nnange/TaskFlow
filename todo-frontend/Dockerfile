@@ -1,5 +1,5 @@
 # Build step
-FROM node:22.14.0-alpine
+FROM node:22.14.0-alpine AS build
 
 # Set working directory
 WORKDIR /app
@@ -15,3 +15,5 @@ RUN npm run build
 FROM nginx:alpine
 COPY --from=build /app/dist /usr/share/nginx/html
 EXPOSE 80
+CMD ["nginx", "-g", "daemon off;"]
+# End of Dockerfile
