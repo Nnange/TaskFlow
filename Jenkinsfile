@@ -1,6 +1,12 @@
 pipeline {
     agent any
 
+    tools {
+        jdk 'JDK 21'
+        maven "Maven"   // Your Maven configuration
+        nodejs "NodeJS" // Your NodeJS configuration
+    }
+
     parameters {
         choice(name: 'PROFILE', choices: ['local', 'dev', 'prod'], description: 'Spring profile to use')
     }
