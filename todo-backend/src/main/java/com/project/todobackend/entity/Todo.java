@@ -15,6 +15,10 @@ public class Todo {
     @Column(nullable = false)
     private boolean completed = false;
 
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
+
     public String getTask() {
         return task;
     }
