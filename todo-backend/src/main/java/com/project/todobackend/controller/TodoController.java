@@ -23,11 +23,6 @@ public class TodoController {
     @Autowired
     private UserRepository userRepository;
 
-    /*public TodoController(TodoRepository todoRepository, UserRepository userRepository) {
-        this.todoRepository = todoRepository;
-        this.userRepository = userRepository;
-    }*/
-
     /// ///////////////
 
     @GetMapping
@@ -81,6 +76,16 @@ public class TodoController {
         todoRepository.delete(todo);
 
         return ResponseEntity.ok("Todo has been deleted!");
+    }
+
+    @DeleteMapping("/completed")
+    public  ResponseEntity<?> deleteAllCompleted(Authentication authentication) {
+        String username = authentication.getName();
+        User user = userRepository.findByUsername(username).orElseThrow();
+
+        todoRepository.deleteCompletedTodos();
+
+        return ResponseEntity.ok("All completed Todos have been deleted!");
     }
 
 }
