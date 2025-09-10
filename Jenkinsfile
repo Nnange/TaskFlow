@@ -32,6 +32,7 @@ pipeline {
             steps {
                 dir(FRONTEND_DIR) {
                     sh 'npm install'
+                    sh 'npm run build'
                     sh 'docker build -t $FRONTEND_IMAGE .'
                 }
             }
