@@ -7,7 +7,6 @@ import { useDispatch, useSelector } from "react-redux";
 export function AppRouter() {
     // Access authentication state from Redux store
     const isAuthenticated = useSelector((state: any) => state.auth.isAuthenticated);
-    const dispatch = useDispatch();
   return (
     <BrowserRouter>
         <Routes>
