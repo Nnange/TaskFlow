@@ -7,6 +7,7 @@ import { FaRegEye, FaRegEyeSlash } from "react-icons/fa";
 import { Login } from "../services/login.service";
 import { useDispatch } from "react-redux";
 import { login } from "../redux/authSlice";
+import { IoMdClose } from "react-icons/io";
 
 
 
@@ -50,8 +51,13 @@ export function LoginPage () {
 
                 <form onSubmit={handleSubmit} className="p-6 flex flex-col gap-y-8">
                     {error && (
-                        <div className="p-3 bg-red-100 text-red-700 rounded-md">
-                            {error}
+                        <div className="flex justify-between items-center p-3 bg-red-100 text-red-700 rounded-md">
+                            <p>{error}</p>
+                            <div className="cursor-pointer"
+                                onClick={() => setError("")}
+                            >
+                                <IoMdClose />
+                            </div> 
                         </div>
                     )}
                     {/* USERNAME */}

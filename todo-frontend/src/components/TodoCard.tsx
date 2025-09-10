@@ -5,7 +5,8 @@ import { useEffect, useState } from "react";
 import { TodoList } from "./TodoList";
 import { todoApi } from "../services/api";
 import {Todo as TodoType} from '../interfaces/Todo'
-import { Footer } from "./Footer";
+import { IoMdClose } from "react-icons/io";
+
 
 
 type FilterType = 'all' | 'active' | 'completed';
@@ -15,7 +16,7 @@ function TodoCard() {
   const [todos, setTodos] = useState<TodoType[]>([])
   const [filter, setFilter] = useState<FilterType>('all')
   const [loading, setLoading] = useState<boolean>(true)
-  const [error, setError] = useState<string | null>(null)
+  const [error, setError] = useState<string>("")
 
   useEffect(() => {
     const fetchTodos = async () => {
@@ -23,7 +24,7 @@ function TodoCard() {
         setLoading(true)
         const data = await todoApi.getAllTodos()
         setTodos(data)
-        setError(null)
+        setError("")
       } catch (err) {
         console.error('Failed to fetch todos: ',err)
         setError('Failed to load tasks. Please try again later.')
@@ -68,7 +69,7 @@ function TodoCard() {
   const addTodo = async (text: string) => {
     if (text.trim()) {
       try {
-        setError(null)
+        setError("")
         const newTodo = await todoApi.createTodo(text)
         setTodos([...todos, newTodo])
       } catch (err) {
@@ -79,7 +80,7 @@ function TodoCard() {
   }
   const toggleTodo = async (id: number) => {
     try {
-      setError(null)
+      setError("")
       const todoToUpdate = todos.find((todo) => todo.id === id)
       if (!todoToUpdate) return
       const updatedTodo = await todoApi.toggleTodo(todoToUpdate)
@@ -91,7 +92,7 @@ function TodoCard() {
   }
   const deleteTodo = async (id: number) => {
     try {
-      setError(null)
+      setError("")
       await todoApi.deleteTodo(id)
       setTodos(todos.filter((todo) => todo.id !== id))
     } catch (err) {
@@ -101,7 +102,7 @@ function TodoCard() {
   }
   const clearCompleted = async () => {
     try {
-      setError(null)
+      setError("")
       await todoApi.clearCompleted()
       setTodos(todos.filter((todo) => !todo.completed))
     } catch (err) {
@@ -125,8 +126,13 @@ function TodoCard() {
 
         <div className="p-6">
         {error && (
-          <div className="mb-4 p-3 bg-red-100 text-red-700 rounded-md">
-            {error}
+          <div className="flex justify-between items-center mb-4 p-3 bg-red-100 text-red-700 rounded-md">
+            <p>{error}</p> 
+            <div className="cursor-pointer"
+                onClick={() => setError("")}
+            >
+              <IoMdClose />
+            </div>
           </div>
         )}
         <TodoInput onAdd={addTodo} />
