@@ -27,7 +27,7 @@ export const TodoCardFooter = ({
           {hasCompleted && (
             <button
               onClick={onClearCompleted}
-              className="text-sm  text-gray-500 hover:text-gray-700 transition-colors"
+              className="text-sm  text-gray-500 hover:text-gray-700 transition-colors hover:bg-green-100 transition-colors cursor-pointer px-2 py-1 rounded"
             >
               Clear completed
             </button>

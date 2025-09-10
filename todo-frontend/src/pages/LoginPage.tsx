@@ -1,9 +1,12 @@
-import { useState } from "react"
+import { use, useState } from "react"
 import { MdOutlineTaskAlt } from "react-icons/md"
 import { Footer } from "../components/Footer"
 import { LuUser } from "react-icons/lu";
 import { FiKey } from "react-icons/fi";
 import { FaRegEye, FaRegEyeSlash } from "react-icons/fa";
+import { Login } from "../services/login.service";
+import { useDispatch } from "react-redux";
+import { login } from "../redux/authSlice";
 
 
 
@@ -11,6 +14,29 @@ export function LoginPage () {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [showPassword, setShowPassword] = useState(false);
+    const [error, setError] = useState("");
+
+    const dispatch = useDispatch();
+
+    // Handle form submission
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        try {
+            const response = await Login({ username, password});
+            console.log("Login successful:", response);
+            // Save the token to  Redux store
+            dispatch(login({ token: response }));
+            // Redirect to the main app or dashboard
+            window.location.href = '/';
+            setUsername("");
+            setPassword("");
+            setError("");
+        } catch (error) {
+            console.error("Login failed:", error);
+            setError("Invalid username or password. Please try again.");
+        }
+        
+    };
 
   return (
    <>
@@ -22,7 +48,12 @@ export function LoginPage () {
                         <span className="text-xl font-thin">Sign in to access your tasks</span>
                 </header>
 
-                <form className="p-6 flex flex-col gap-y-8">
+                <form onSubmit={handleSubmit} className="p-6 flex flex-col gap-y-8">
+                    {error && (
+                        <div className="p-3 bg-red-100 text-red-700 rounded-md">
+                            {error}
+                        </div>
+                    )}
                     {/* USERNAME */}
                     <div>
                         <label htmlFor="username">Username</label>

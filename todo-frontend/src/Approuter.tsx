@@ -1,10 +1,13 @@
-import { BrowserRouter, Navigate, Route, Router, Routes } from "react-router-dom";
+import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import { LoginPage } from "./pages/LoginPage";
 import App from "./App";
+import { useDispatch, useSelector } from "react-redux";
 
 
 export function AppRouter() {
-    const isAuthenticated = false; // Replace with actual authentication logic
+    // Access authentication state from Redux store
+    const isAuthenticated = useSelector((state: any) => state.auth.isAuthenticated);
+    const dispatch = useDispatch();
   return (
     <BrowserRouter>
         <Routes>
