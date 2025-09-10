@@ -30,9 +30,9 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/auth/**").permitAll() // login/register open
                         .requestMatchers("/api/**").authenticated()
-                                .requestMatchers(HttpMethod.DELETE, "/api/todos/completed").authenticated()
-                                .anyRequest().authenticated()
-                        )
+                        .requestMatchers(HttpMethod.DELETE, "/api/todos/completed").authenticated()
+                        .anyRequest().authenticated()
+                )
                 .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
         // Register the JWT filter
