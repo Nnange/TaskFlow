@@ -1,15 +1,22 @@
-import { MdOutlineTaskAlt } from "react-icons/md";
+import { useDispatch } from "react-redux";
+import { logout } from "../redux/authSlice";
 
-
-
-function Header() {
+export function Header() {
+    const dispatch = useDispatch();
   return (
-    <header className="text-white rounded-t-lg p-3 flex items-center justify-center gap-2
-        bg-linear-to-r/hsl from-indigo-500 to-teal-400">
-        <MdOutlineTaskAlt size={25} />
-        <span className="text-3xl font-bold">TaskFlow</span>
+    <header className="text-black p-3 bg-white w-full flex items-center justify-between">
+        <div className="flex items-center gap-2">
+            <span className="text-3xl font-bold">TaskFlow</span>
+        </div>
+        <button className="bg-green-500 p-3 rounded-lg cursor-pointer text-white"
+            onClick={() => {
+                dispatch(logout())
+                // sessionStorage.removeItem("token")
+                window.location.href = '/login';
+            }}
+        >
+            Sign Out
+        </button>
     </header>
   );
 }
-
-export default Header;
