@@ -16,7 +16,7 @@ public class Todo {
     private boolean completed = false;
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id", nullable = false) // foreign Key
     private User user;
 
     public String getTask() {
@@ -41,5 +41,13 @@ public class Todo {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 }
