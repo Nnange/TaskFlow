@@ -3,6 +3,7 @@ import { LoginPage } from "./pages/LoginPage";
 import App from "./App";
 import { useSelector } from "react-redux";
 import { RootState } from "./redux/store";
+import Register from "./pages/Register";
 
 
 export default function AppRouter() {
@@ -17,6 +18,7 @@ export default function AppRouter() {
     <BrowserRouter>
         <Routes>
             <Route path="/login" element={<LoginPage />} />
+            <Route path="/signup" element={<Register />} />
             <Route 
                 path="/"
                 element={isAuthenticated ? <App/> : <Navigate to="/login"/>}

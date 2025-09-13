@@ -1,33 +1,45 @@
-import { use, useState } from "react"
+import { useState } from "react"
 import { MdOutlineTaskAlt } from "react-icons/md"
 import { Footer } from "../components/Footer"
 import { LuUser } from "react-icons/lu";
 import { FiKey } from "react-icons/fi";
 import { FaRegEye, FaRegEyeSlash } from "react-icons/fa";
-import { Login } from "../services/login.service";
+import { SignUp } from "../services/login.service";
 import { useDispatch } from "react-redux";
-import { login } from "../redux/authSlice";
+import { signup } from "../redux/authSlice";
 import { IoMdClose } from "react-icons/io";
 import { store } from "../redux/store";
 import { useNavigate } from "react-router-dom";
 
 
-export function LoginPage () {
+export default function Register () {
     const [username, setUsername] = useState("");
+    const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [repeatPassword, setRepeatPassword] = useState("");
     const [showPassword, setShowPassword] = useState(false);
+    const [showRepeatPassword, setShowRepeatPassword] = useState(false);
+    const [doesPasswordMatch, setDoesPasswordMatch] = useState(true);
     const [rememberMe, setRememberMe] = useState(false);
     const [error, setError] = useState("");
 
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
+    const checkPasswordMatch = () => {  
+        if (password !== repeatPassword && repeatPassword !== "") {
+            setDoesPasswordMatch(false);
+        } else {
+            setDoesPasswordMatch(true);
+        }
+    };
+    
     // Handle form submission
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         try {
-            const response = await Login({ username, password});
-            dispatch(login({ token: response, user: username }));
+            const response = await SignUp({ username, email, password});
+            dispatch(signup({ token: response, email: email, user: username }));
             if (rememberMe) {
                 localStorage.setItem("auth", JSON.stringify(store.getState().auth));
             } else {
@@ -73,7 +85,23 @@ export function LoginPage () {
                                 type="text"
                                 value={username}
                                 onChange={(e) => setUsername(e.target.value)}
-                                placeholder="Enter your username..."
+                                placeholder="Enter a username of your choice..."
+                                className="flex-1 pr- py-3 bg-transparent focus:outline-none"
+                            />
+                        </div>
+                    </div>
+                    {/* EMAIL */}
+                    <div>
+                        <label htmlFor="email">Email</label>
+                        <div id="email" className="flex items-center bg-gray-50 rounded-lg overflow-hidden shadow-sm border border-gray-200 focus-within:ring-2 focus-within:ring-blue-500 focus-within:border-blue-500 transition-all">
+                            <div className=" p-3 ">
+                                <LuUser  size={25} />
+                            </div>
+                            <input
+                                type="email"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                                placeholder="Enter your email..."
                                 className="flex-1 pr- py-3 bg-transparent focus:outline-none"
                             />
                         </div>
@@ -110,6 +138,42 @@ export function LoginPage () {
 
                         </div>
                     </div>
+                    {/* repeat PASSWORD */}
+                    <div>
+                        <label htmlFor="password">Password</label>
+                        <div id="password" className={"flex items-center bg-gray-50 rounded-lg overflow-hidden shadow-sm border border-gray-200 focus-within:ring-2 focus-within:ring-blue-500 focus-within:border-blue-500 transition-all" 
+                            + (doesPasswordMatch ? "" : " border-red-500 ring-red-500 focus-within:ring-red-500 focus-within:border-red-500 transition-all")}>
+                            <div className=" p-3 ">
+                                <FiKey   size={25} />
+                            </div>
+                            <input
+                                type={showRepeatPassword ? "text" : "password"}
+                                value={repeatPassword}
+                                onChange={(e) => {setRepeatPassword(e.target.value);}}
+                                onKeyUp={() => checkPasswordMatch()}
+                                placeholder="Re-enter your password..."
+                                className="flex-1 pr- py-3 bg-transparent focus:outline-none"
+                            />
+                            {!showRepeatPassword && 
+                                <button type="button" className="p-3 cursor-pointer text-gray-500 hover:text-gray-700 focus:outline-none"
+                                    onClick={() => setShowRepeatPassword(!showRepeatPassword)}
+                                >
+                                    <FaRegEye size={25} />
+                                </button>
+                            }
+                            {showRepeatPassword && 
+                                <button type="button" className="p-3 cursor-pointer text-gray-500 hover:text-gray-700 focus:outline-none"
+                                    onClick={() => setShowRepeatPassword(!showRepeatPassword)}
+                                >
+                                    <FaRegEyeSlash size={25} />
+                                </button>
+                            }
+
+                        </div>
+                        {!doesPasswordMatch && 
+                            <p className="text-red-500 text-sm mt-1">Passwords do not match.</p>
+                        }
+                    </div>
 
                     {/* Remember me button and forgot password link  goes here */}
                     <div className="flex flex-col items-center sm:flex-row sm:justify-between sm:items-center gap-y-4">
@@ -125,17 +189,15 @@ export function LoginPage () {
                     </div>
                     <div>
                         <button type="submit" className="w-full bg-green-500 hover:bg-green-600 text-white py-3 rounded-lg transition-colors">
-                            Sign In
+                            Sign Up
                         </button> 
                     </div>
                     <div className="text-center text-sm text-gray-600">
-                        <span className="pr-2"> Don't have an account?</span>
-                        <button
-                            type="button" 
-                            className="text-blue-600 hover:underline cursor-pointer"
-                            onClick={() => navigate("/signup")}
-                        > 
-                        Sign Up
+                        <span className="pr-2">Already have an account?</span>
+                        <button type="button" className="text-blue-600 hover:underline cursor-pointer"
+                            onClick={() => navigate("/login")}
+                        >
+                            log In
                         </button>
                     </div>  
                 </form>
