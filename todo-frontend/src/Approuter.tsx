@@ -1,12 +1,13 @@
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import { LoginPage } from "./pages/LoginPage";
 import App from "./App";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
+import { RootState } from "./redux/store";
 
 
-export function AppRouter() {
-    // Access authentication state from Redux store
-    const isAuthenticated = useSelector((state: any) => state.auth.isAuthenticated);
+export default function AppRouter() {
+    const isAuthenticated = useSelector((state: RootState) => state.auth.isAuthenticated) || sessionStorage.getItem("token") !== null;
+    
   return (
     <BrowserRouter>
         <Routes>

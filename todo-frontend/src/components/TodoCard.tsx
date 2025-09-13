@@ -35,37 +35,6 @@ function TodoCard() {
     fetchTodos()
   }, [])
 
-  // const addTodo = (text: string) => {
-  //   if (text.trim()) {
-  //     setTodos([
-  //       ...todos,
-  //       {
-  //         id: Date.now(),
-  //         text,
-  //         completed: false,
-  //       },
-  //     ])
-  //   }
-  // }
-  // const toggleTodo = (id: number) => {
-  //   setTodos(
-  //     todos.map((todo) =>
-  //       todo.id === id
-  //         ? {
-  //             ...todo,
-  //             completed: !todo.completed,
-  //           }
-  //         : todo,
-  //     ),
-  //   )
-  // }
-  // const deleteTodo = (id: number) => {
-  //   setTodos(todos.filter((todo) => todo.id !== id))
-  // }
-  // const clearCompleted = () => {
-  //   setTodos(todos.filter((todo) => !todo.completed))
-  // }
-
   const addTodo = async (text: string) => {
     if (text.trim()) {
       try {

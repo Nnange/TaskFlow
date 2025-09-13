@@ -6,9 +6,10 @@ import { FiKey } from "react-icons/fi";
 import { FaRegEye, FaRegEyeSlash } from "react-icons/fa";
 import { Login } from "../services/login.service";
 import { useDispatch } from "react-redux";
-import { login } from "../redux/authSlice";
+import { login, setUser } from "../redux/authSlice";
 import { IoMdClose } from "react-icons/io";
-
+import { store } from "../redux/store";
+import { useNavigate } from "react-router-dom";
 
 
 export function LoginPage () {
@@ -18,20 +19,15 @@ export function LoginPage () {
     const [error, setError] = useState("");
 
     const dispatch = useDispatch();
+    const navigate = useNavigate();
 
     // Handle form submission
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         try {
             const response = await Login({ username, password});
-            console.log("Login successful:", response);
-            // Save the token to  Redux store
-            dispatch(login({ token: response }));
-            // Redirect to the main app or dashboard
-            window.location.href = '/';
-            setUsername("");
-            setPassword("");
-            setError("");
+            dispatch(login({ token: response, user: username }));
+            navigate("/");
         } catch (error) {
             console.error("Login failed:", error);
             setError("Invalid username or password. Please try again.");
@@ -79,8 +75,8 @@ export function LoginPage () {
 
                     {/* PASSWORD */}
                     <div>
-                        <label htmlFor="username">Password</label>
-                        <div id="username" className="flex items-center bg-gray-50 rounded-lg overflow-hidden shadow-sm border border-gray-200 focus-within:ring-2 focus-within:ring-blue-500 focus-within:border-blue-500 transition-all">
+                        <label htmlFor="password">Password</label>
+                        <div id="password" className="flex items-center bg-gray-50 rounded-lg overflow-hidden shadow-sm border border-gray-200 focus-within:ring-2 focus-within:ring-blue-500 focus-within:border-blue-500 transition-all">
                             <div className=" p-3 ">
                                 <FiKey   size={25} />
                             </div>
@@ -92,14 +88,14 @@ export function LoginPage () {
                                 className="flex-1 pr- py-3 bg-transparent focus:outline-none"
                             />
                             {!showPassword && 
-                                <button className="p-3 cursor-pointer text-gray-500 hover:text-gray-700 focus:outline-none"
+                                <button type="button" className="p-3 cursor-pointer text-gray-500 hover:text-gray-700 focus:outline-none"
                                     onClick={() => setShowPassword(!showPassword)}
                                 >
                                     <FaRegEye size={25} />
                                 </button>
                             }
                             {showPassword && 
-                                <button className="p-3 cursor-pointer text-gray-500 hover:text-gray-700 focus:outline-none"
+                                <button type="button" className="p-3 cursor-pointer text-gray-500 hover:text-gray-700 focus:outline-none"
                                     onClick={() => setShowPassword(!showPassword)}
                                 >
                                     <FaRegEyeSlash size={25} />
