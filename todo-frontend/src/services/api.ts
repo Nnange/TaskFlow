@@ -20,7 +20,7 @@ export const api = axios.create({
 api.interceptors.request.use((config) => {
   // You can add auth tokens here if needed
   const state = store.getState();
-  const token = state.auth.token || sessionStorage.getItem("token");
+  const token = state.auth.token;
   if (token) {
     config.headers['Authorization'] = `Bearer ${token}`
   }
