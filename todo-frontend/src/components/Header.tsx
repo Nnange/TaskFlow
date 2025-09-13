@@ -9,7 +9,13 @@ export function Header() {
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
-    const username = useSelector((state: RootState) => state.auth.user) || sessionStorage.getItem("user");
+    const savedAuth = JSON.parse(
+      localStorage.getItem("auth") || 
+      sessionStorage.getItem("auth") ||
+      "null"
+    );
+
+    const username = useSelector((state: RootState) => state.auth.user) || savedAuth?.user || "Guest";
 
   return (
     <header className="text-black p-3 bg-white w-full flex items-center justify-between">

@@ -21,15 +21,13 @@ const authSlice = createSlice({
       state.isAuthenticated = true;
       state.token = action.payload.token;
       state.user = action.payload.user;
-      sessionStorage.setItem("token", action.payload.token);
-      sessionStorage.setItem("user", action.payload.user);
     },
     logout: (state) => {
       state.isAuthenticated = false;
       state.token = null;
       state.user = "";
-      sessionStorage.removeItem("token");
-      sessionStorage.removeItem("user");
+      localStorage.removeItem("auth");
+      sessionStorage.removeItem("auth");
     },
     setUser: (state, action) => {
       state.user = action.payload.user;

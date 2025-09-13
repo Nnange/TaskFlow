@@ -16,6 +16,7 @@ export function LoginPage () {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [showPassword, setShowPassword] = useState(false);
+    const [rememberMe, setRememberMe] = useState(false);
     const [error, setError] = useState("");
 
     const dispatch = useDispatch();
@@ -27,6 +28,11 @@ export function LoginPage () {
         try {
             const response = await Login({ username, password});
             dispatch(login({ token: response, user: username }));
+            if (rememberMe) {
+                localStorage.setItem("auth", JSON.stringify(store.getState().auth));
+            } else {
+                sessionStorage.setItem("auth", JSON.stringify(store.getState().auth));
+            }
             navigate("/");
         } catch (error) {
             console.error("Login failed:", error);
@@ -108,7 +114,11 @@ export function LoginPage () {
                     {/* Remember me button and forgot password link  goes here */}
                     <div className="flex flex-col items-center sm:flex-row sm:justify-between sm:items-center gap-y-4">
                         <div className="flex items-center gap-x-2">
-                            <input type="checkbox" id="remember" className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"/>
+                            <input type="checkbox" id="remember"
+                                className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                                checked={rememberMe}
+                                onChange={(e) => setRememberMe(e.target.checked)}
+                             />
                             <label htmlFor="remember" className="text-sm text-gray-600">Remember me</label>
                         </div>
                         <a href="#" className="text-sm text-blue-600 hover:underline">Forgot password?</a>

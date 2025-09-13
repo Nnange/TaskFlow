@@ -6,7 +6,12 @@ import { RootState } from "./redux/store";
 
 
 export default function AppRouter() {
-    const isAuthenticated = useSelector((state: RootState) => state.auth.isAuthenticated) || sessionStorage.getItem("token") !== null;
+  const savedAuth = JSON.parse(
+      localStorage.getItem("auth") || 
+      sessionStorage.getItem("auth") ||
+      "null"
+    );
+    const isAuthenticated = useSelector((state: RootState) => state.auth.isAuthenticated) || savedAuth?.token !== null;
     
   return (
     <BrowserRouter>
