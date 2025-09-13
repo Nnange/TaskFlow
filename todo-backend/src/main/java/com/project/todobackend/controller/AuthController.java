@@ -40,8 +40,8 @@ public class AuthController {
     @PostMapping("/signup")
     public String signup(@RequestBody User user) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        userRepository.save(user);
-        return "User registered successfully";
+        var userDetails = userDetailsService.loadUserByUsername(user.getUsername());
+        return jwtUtil.generateToken(userDetails);
     }
 
     @PostMapping("/login")
