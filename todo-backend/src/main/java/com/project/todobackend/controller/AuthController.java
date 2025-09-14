@@ -5,6 +5,7 @@ import com.project.todobackend.config.JwtUtil;
 import com.project.todobackend.entity.User;
 import com.project.todobackend.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -38,10 +39,16 @@ public class AuthController {
     }
 
     @PostMapping("/signup")
-    public String signup(@RequestBody User user) {
+    public ResponseEntity<String> signup(@RequestBody User user) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        var userDetails = userDetailsService.loadUserByUsername(user.getUsername());
-        return jwtUtil.generateToken(userDetails);
+
+        User savedUser = userRepository.save(user);
+
+        UserDetails userDetails = userDetailsService.loadUserByUsername(savedUser.getUsername());
+
+        String token = jwtUtil.generateToken(userDetails);
+
+        return ResponseEntity.ok(token);
     }
 
     @PostMapping("/login")

@@ -12,7 +12,7 @@ export default function AppRouter() {
       sessionStorage.getItem("auth") ||
       "null"
     );
-    const isAuthenticated = useSelector((state: RootState) => state.auth.isAuthenticated) || savedAuth?.token !== null;
+    const isAuthenticated = useSelector((state: RootState) => state.auth.isAuthenticated) || (savedAuth?.token !== null) && (savedAuth?.token !== undefined);
     
   return (
     <BrowserRouter>
