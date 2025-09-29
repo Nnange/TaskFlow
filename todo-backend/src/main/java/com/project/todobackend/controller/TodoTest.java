@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 public class TodoTest {
 
-    @RequestMapping("/api/test")
+    @RequestMapping("/test")
     public String testConnection() {
         return " Backend is running and reachable";
     }

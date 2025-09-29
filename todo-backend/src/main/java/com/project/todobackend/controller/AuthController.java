@@ -5,16 +5,18 @@ import com.project.todobackend.config.JwtUtil;
 import com.project.todobackend.entity.User;
 import com.project.todobackend.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDateTime;
+import java.util.Optional;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/auth")
@@ -40,15 +42,27 @@ public class AuthController {
 
     @PostMapping("/signup")
     public ResponseEntity<String> signup(@RequestBody User user) {
+        if (userRepository.findByEmail(user.getEmail()).isPresent()){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Email already in use");
+        }
+
         user.setPassword(passwordEncoder.encode(user.getPassword()));
+        user.setEnabled(false);
 
         User savedUser = userRepository.save(user);
-
         UserDetails userDetails = userDetailsService.loadUserByUsername(savedUser.getUsername());
 
         String token = jwtUtil.generateToken(userDetails);
 
-        return ResponseEntity.ok(token);
+        user.setVerificationToken(token);
+        user.setTokenExpiry(LocalDateTime.now().plusHours(24));
+
+        String verifyUrl = "http://localhost:9091/auth/verify?token=" + token;
+        emailService.sendEmail(user.getEmail(),
+                "Verify your account",
+                "Click the link to verify: " + verifyUrl);
+
+        return ResponseEntity.ok("Signup successful! Please check your email to verify.");
     }
 
     @PostMapping("/login")
@@ -61,4 +75,29 @@ public class AuthController {
         // generate JWT
         return jwtUtil.generateToken(userDetails);
     }
+
+    @GetMapping("/verify")
+    public ResponseEntity<String> verifyAccount(@RequestParam String token) {
+        Optional<User> optionalUser = userRepository.findByVerificationToken(token);
+
+        if (optionalUser.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid token");
+        }
+
+        User user = optionalUser.get();
+
+        if (user.getTokenExpiry().isBefore(LocalDateTime.now())) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Token expired");
+        }
+
+        user.setEnabled(true);
+        user.setVerificationToken(null);
+        user.setTokenExpiry(null);
+        userRepository.save(user);
+
+        return ResponseEntity.ok("Account verified successfully! You can now log in.");
+    }
+
+
+
 }

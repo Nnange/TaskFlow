@@ -1,10 +1,11 @@
 import axios from 'axios'
 import { Todo } from '../interfaces/Todo'
 import { store } from '../redux/store'
+import { logout } from '../redux/authSlice'
 
 // const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 // const API_BASE_URL='http://localhost:9091'
-const API_BASE_URL='http://192.168.2.90:9091'
+const API_BASE_URL='http://192.168.178.30:9091'
 
 
 
@@ -32,9 +33,10 @@ api.interceptors.request.use((config) => {
 api.interceptors.response.use((response) => {
   return response
 }, (error) => {
-  if (error.response && error.response.status === 401) {
+  if (error.response?.status === 401 && error.response?.data === "Token expired") {
     // Handle unauthorized access, e.g., redirect to login
     console.error('Unauthorized! Redirecting to login...')
+    store.dispatch(logout())
     window.location.href = '/login'
   }
   return Promise.reject(error)

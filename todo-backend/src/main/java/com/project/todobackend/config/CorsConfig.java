@@ -14,7 +14,7 @@ public class CorsConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOrigins(Arrays.asList("http://localhost:5173", "http://192.168.2.90:3001", "https://taskflow.nnangedev.duckdns.org/")); // frontend dev
+        config.setAllowedOrigins(Arrays.asList("http://localhost:5173", "http://192.168.178.36:3001", "https://taskflow.nnangedev.duckdns.org/")); // frontend dev
         config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(List.of("*"));
         config.setAllowCredentials(true);
