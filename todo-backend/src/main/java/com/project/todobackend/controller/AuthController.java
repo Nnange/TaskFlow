@@ -4,6 +4,7 @@ import com.project.todobackend.DTOs.AuthRequest;
 import com.project.todobackend.config.JwtUtil;
 import com.project.todobackend.entity.User;
 import com.project.todobackend.repository.UserRepository;
+import com.project.todobackend.service.EmailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,18 +24,21 @@ import java.util.UUID;
 public class AuthController {
 
     private AuthenticationManager authenticationManager;
-    private JwtUtil jwtUtil;
-    private UserDetailsService userDetailsService;
+    private final EmailService emailService;
+    private final JwtUtil jwtUtil;
+    private final UserDetailsService userDetailsService;
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
     public AuthController(
             UserRepository userRepository,
+            EmailService emailService,
             PasswordEncoder passwordEncoder,
             UserDetailsService userDetailsService,
             JwtUtil jwtUtil,
             AuthenticationManager authenticationManager) {
         this.userRepository = userRepository;
+        this.emailService = emailService;
         this.passwordEncoder = passwordEncoder;
         this.userDetailsService = userDetailsService;
         this.jwtUtil = jwtUtil;
@@ -57,7 +61,7 @@ public class AuthController {
         user.setVerificationToken(token);
         user.setTokenExpiry(LocalDateTime.now().plusHours(24));
 
-        String verifyUrl = "http://localhost:9091/auth/verify?token=" + token;
+        String verifyUrl = "http://localhost:5173/auth/verify?token=" + token;
         emailService.sendEmail(user.getEmail(),
                 "Verify your account",
                 "Click the link to verify: " + verifyUrl);

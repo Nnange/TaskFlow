@@ -10,7 +10,7 @@ export default function EmailVerificationPage() {
   return (
     <>
         <div className='min-h-screen bg-gradient-to-br from-indigo-50 to-blue-100 flex flex-col items-center'>
-                    <div className="border rounded-lg mx-4 bg-white sm:mx-4 my-12  shadow-md text-black max-w-full md:w-3/4 lg:w-1/2">
+                    <div className="border rounded-lg mx-4 bg-white sm:mx-4 mt-3 mb-12  shadow-md text-black max-w-full md:w-3/4 lg:w-1/3">
                         <header className="text-white rounded-t-lg p-3 flex flex-col items-center justify-center gap-2
                                 bg-linear-to-r/hsl from-indigo-500 to-teal-400">
                                 <span className="text-3xl font-bold flex items-center gap-x-1"> <MdOutlineTaskAlt size={25} />TaskFlow</span>
@@ -30,7 +30,7 @@ export default function EmailVerificationPage() {
                             <div className="flex flex-col items-start gap-y-4 border p-4 rounded-md bg-gray-100">
                                 <h2 className="text-lg font-semibold">Didn't receive the email?</h2>
                                 <ul className="list-disc list-inside ml-2">
-                                    <li className="">Check your or junk folder</li>
+                                    <li className="">Check your spam  or junk folder</li>
                                     <li className="">Verify you entered the correct email address</li>
                                     <li className="">Allow a few minutes for the email to arrive</li>
                                 </ul>       

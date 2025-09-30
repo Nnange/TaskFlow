@@ -45,7 +45,7 @@ export default function Register () {
             } else {
                 sessionStorage.setItem("auth", JSON.stringify(store.getState().auth));
             }
-            navigate("/");
+            navigate("/verify");
         } catch (error) {
             console.error("Login failed:", error);
             setError("Invalid username or password. Please try again.");

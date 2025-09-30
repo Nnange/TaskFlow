@@ -4,6 +4,8 @@ import App from "./App";
 import { useSelector } from "react-redux";
 import { RootState } from "./redux/store";
 import Register from "./pages/Register";
+import EmailVerificationPage from "./pages/EmailVerificationPage";
+import EmailVerificationSuccess from "./pages/EmailVerificationSuccess";
 
 
 export default function AppRouter() {
@@ -19,6 +21,9 @@ export default function AppRouter() {
         <Routes>
             <Route path="/login" element={<LoginPage />} />
             <Route path="/signup" element={<Register />} />
+            <Route path="/verify" element={<EmailVerificationPage />} />
+            <Route path="/verification-success" element={<EmailVerificationSuccess />} />
+
             <Route 
                 path="/"
                 element={isAuthenticated ? <App/> : <Navigate to="/login"/>}
