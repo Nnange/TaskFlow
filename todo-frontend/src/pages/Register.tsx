@@ -10,6 +10,7 @@ import { signup } from "../redux/authSlice";
 import { IoMdClose } from "react-icons/io";
 import { store } from "../redux/store";
 import { useNavigate } from "react-router-dom";
+import Loader from "../components/Loader";
 
 
 export default function Register () {
@@ -22,6 +23,7 @@ export default function Register () {
     const [doesPasswordMatch, setDoesPasswordMatch] = useState(true);
     const [rememberMe, setRememberMe] = useState(false);
     const [error, setError] = useState("");
+    const [loading, setLoading] = useState(false);
 
     const dispatch = useDispatch();
     const navigate = useNavigate();
@@ -38,6 +40,7 @@ export default function Register () {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         try {
+            setLoading(true);
             const response = await SignUp({ username, email, password});
             dispatch(signup({ token: response, email: email, user: username }));
             if (rememberMe) {
@@ -45,7 +48,8 @@ export default function Register () {
             } else {
                 sessionStorage.setItem("auth", JSON.stringify(store.getState().auth));
             }
-            navigate("/verify");
+            setLoading(false);
+            navigate("/auth/verify");
         } catch (error) {
             console.error("Login failed:", error);
             setError("Invalid username or password. Please try again.");
@@ -205,6 +209,10 @@ export default function Register () {
 
             <Footer />
         </div>
+
+        {loading && 
+            <Loader />
+        }
     </>
   )
 }

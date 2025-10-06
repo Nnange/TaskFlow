@@ -4,8 +4,8 @@ import { store } from '../redux/store'
 import { logout } from '../redux/authSlice'
 
 // const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
-// const API_BASE_URL='http://localhost:9091'
-const API_BASE_URL='http://192.168.178.30:9091'
+const API_BASE_URL='http://localhost:9091'
+// const API_BASE_URL='http://192.168.178.30:9091'
 
 
 

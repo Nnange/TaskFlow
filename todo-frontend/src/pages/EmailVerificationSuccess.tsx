@@ -42,7 +42,7 @@ export default function EmailVerificationPage() {
                     </div>
         
                     <Footer />
-                </div>
+        </div>
     </>
   )
 }

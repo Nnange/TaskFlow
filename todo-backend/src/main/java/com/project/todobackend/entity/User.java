@@ -24,7 +24,10 @@ public class User implements UserDetails {
     private String role = "USER";
 
     private boolean enabled = false;
+
+    @Column(length = 512)
     private String verificationToken;
+
     private LocalDateTime tokenExpiry;
     // one user -> many todos
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)

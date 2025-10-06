@@ -49,30 +49,28 @@ public class AuthController {
         if (userRepository.findByEmail(user.getEmail()).isPresent()){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Email already in use");
         }
-
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setEnabled(false);
 
         User savedUser = userRepository.save(user);
+
         UserDetails userDetails = userDetailsService.loadUserByUsername(savedUser.getUsername());
-
         String token = jwtUtil.generateToken(userDetails);
-
-        user.setVerificationToken(token);
-        user.setTokenExpiry(LocalDateTime.now().plusHours(24));
+        savedUser.setVerificationToken(token);
+        savedUser.setTokenExpiry(LocalDateTime.now().plusHours(24));
+        userRepository.save(savedUser);
 
         String verifyUrl = "http://localhost:5173/auth/verify?token=" + token;
-        emailService.sendEmail(user.getEmail(),
+        emailService.sendEmail(savedUser.getEmail(),
                 "Verify your account",
                 "Click the link to verify: " + verifyUrl);
 
-        return ResponseEntity.ok("Signup successful! Please check your email to verify.");
+        return ResponseEntity.ok(token);
     }
 
     @PostMapping("/login")
     public String login(@RequestBody AuthRequest request) throws Exception {
         var userDetails = userDetailsService.loadUserByUsername(request.getUsername());
-
         if(!passwordEncoder.matches(request.getPassword(), userDetails.getPassword())) {
             throw new Exception("Incorrect username or password");
         }
@@ -82,16 +80,19 @@ public class AuthController {
 
     @GetMapping("/verify")
     public ResponseEntity<String> verifyAccount(@RequestParam String token) {
+        System.out.println("Received token: " + token);
+
         Optional<User> optionalUser = userRepository.findByVerificationToken(token);
 
         if (optionalUser.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid token");
+            System.out.println("No user found with this token!");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid verification token");
         }
 
         User user = optionalUser.get();
 
-        if (user.getTokenExpiry().isBefore(LocalDateTime.now())) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Token expired");
+        if (user.getTokenExpiry() == null || user.getTokenExpiry().isBefore(LocalDateTime.now())) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Verification token has expired");
         }
 
         user.setEnabled(true);
@@ -101,7 +102,5 @@ public class AuthController {
 
         return ResponseEntity.ok("Account verified successfully! You can now log in.");
     }
-
-
 
 }

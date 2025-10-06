@@ -21,8 +21,8 @@ export default function AppRouter() {
         <Routes>
             <Route path="/login" element={<LoginPage />} />
             <Route path="/signup" element={<Register />} />
-            <Route path="/verify" element={<EmailVerificationPage />} />
-            <Route path="/verification-success" element={<EmailVerificationSuccess />} />
+            <Route path="/auth/verify" element={<EmailVerificationPage />} />
+            <Route path="/auth/verifySuccess" element={<EmailVerificationSuccess />} />
 
             <Route 
                 path="/"
