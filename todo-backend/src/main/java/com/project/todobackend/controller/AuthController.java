@@ -5,6 +5,7 @@ import com.project.todobackend.config.JwtUtil;
 import com.project.todobackend.entity.User;
 import com.project.todobackend.repository.UserRepository;
 import com.project.todobackend.service.EmailService;
+import com.project.todobackend.service.MyUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -54,8 +55,7 @@ public class AuthController {
 
         User savedUser = userRepository.save(user);
 
-        UserDetails userDetails = userDetailsService.loadUserByUsername(savedUser.getUsername());
-        String token = jwtUtil.generateToken(userDetails);
+        String token = jwtUtil.generateToken(savedUser.getUsername());
         savedUser.setVerificationToken(token);
         savedUser.setTokenExpiry(LocalDateTime.now().plusHours(24));
         userRepository.save(savedUser);
@@ -70,7 +70,10 @@ public class AuthController {
 
     @PostMapping("/login")
     public String login(@RequestBody AuthRequest request) throws Exception {
+        System.out.println("login function");
         var userDetails = userDetailsService.loadUserByUsername(request.getUsername());
+        System.out.println("userDetails: " + userDetails);
+
         if(!passwordEncoder.matches(request.getPassword(), userDetails.getPassword())) {
             throw new Exception("Incorrect username or password");
         }

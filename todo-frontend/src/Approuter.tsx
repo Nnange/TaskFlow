@@ -5,7 +5,6 @@ import { useSelector } from "react-redux";
 import { RootState } from "./redux/store";
 import Register from "./pages/Register";
 import EmailVerificationPage from "./pages/EmailVerificationPage";
-import EmailVerificationSuccess from "./pages/EmailVerificationSuccess";
 
 
 export default function AppRouter() {
@@ -22,7 +21,6 @@ export default function AppRouter() {
             <Route path="/login" element={<LoginPage />} />
             <Route path="/signup" element={<Register />} />
             <Route path="/auth/verify" element={<EmailVerificationPage />} />
-            <Route path="/auth/verifySuccess" element={<EmailVerificationSuccess />} />
 
             <Route 
                 path="/"

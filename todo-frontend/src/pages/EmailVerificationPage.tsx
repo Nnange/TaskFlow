@@ -37,7 +37,6 @@ export default function EmailVerificationPage() {
             try {
                 setStatus('loading');
                 const response = await api.get(`/auth/verify?token=${token}`);
-                console.log(response.data);
                 setStatus('success');
             } catch (error) {
                 console.error("Email verification failed:", error);

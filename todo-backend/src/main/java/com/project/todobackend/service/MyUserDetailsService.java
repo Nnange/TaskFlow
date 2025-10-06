@@ -23,7 +23,7 @@ public class MyUserDetailsService implements UserDetailsService {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found with username: " + username));
 
-        if (user.isEnabled()) {
+        if (!user.isEnabled()) {
             throw new UsernameNotFoundException("User not enabled. Please verify your email.");
         }
 

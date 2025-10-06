@@ -39,8 +39,8 @@ export default function Register () {
     // Handle form submission
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+        setLoading(true);
         try {
-            setLoading(true);
             const response = await SignUp({ username, email, password});
             dispatch(signup({ token: response, email: email, user: username }));
             if (rememberMe) {
@@ -53,6 +53,7 @@ export default function Register () {
         } catch (error) {
             console.error("Login failed:", error);
             setError("Invalid username or password. Please try again.");
+            setLoading(false);
         }
         
     };
@@ -207,12 +208,12 @@ export default function Register () {
                 </form>
             </div>
 
+            {loading && 
+                <Loader />
+            }
             <Footer />
         </div>
 
-        {loading && 
-            <Loader />
-        }
     </>
   )
 }
