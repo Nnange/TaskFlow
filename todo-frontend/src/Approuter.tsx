@@ -5,6 +5,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "./redux/store";
 import Register from "./pages/Register";
 import EmailVerificationPage from "./pages/EmailVerificationPage";
+import { ForgotPasswordPage } from "./pages/ForgotPasswordPage";
 
 
 export default function AppRouter() {
@@ -21,6 +22,7 @@ export default function AppRouter() {
             <Route path="/login" element={<LoginPage />} />
             <Route path="/signup" element={<Register />} />
             <Route path="/auth/verify" element={<EmailVerificationPage />} />
+            <Route path="/forgot-password" element={<ForgotPasswordPage />} />
 
             <Route 
                 path="/"

@@ -145,7 +145,7 @@ export default function Register () {
                     </div>
                     {/* repeat PASSWORD */}
                     <div>
-                        <label htmlFor="password">Password</label>
+                        <label htmlFor="password">Confirm Password</label>
                         <div id="password" className={"flex items-center bg-gray-50 rounded-lg overflow-hidden shadow-sm border border-gray-200 focus-within:ring-2 focus-within:ring-blue-500 focus-within:border-blue-500 transition-all" 
                             + (doesPasswordMatch ? "" : " border-red-500 ring-red-500 focus-within:ring-red-500 focus-within:border-red-500 transition-all")}>
                             <div className=" p-3 ">
@@ -190,7 +190,7 @@ export default function Register () {
                              />
                             <label htmlFor="remember" className="text-sm text-gray-600">Remember me</label>
                         </div>
-                        <a href="#" className="text-sm text-blue-600 hover:underline">Forgot password?</a>
+                        <p onClick={() => navigate("/forgot-password")} className="text-sm text-blue-600 hover:underline cursor-pointer">Forgot password?</p>
                     </div>
                     <div>
                         <button type="submit" className="w-full bg-green-500 hover:bg-green-600 text-white py-3 rounded-lg transition-colors">

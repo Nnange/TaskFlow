@@ -5,18 +5,12 @@ import { FiCheckCircle, FiRefreshCcw } from "react-icons/fi";
 import { Link, useSearchParams } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
 import {api} from "../services/api";
-import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import Loader from "../components/Loader";
-
-
-
-
 
 
 export default function EmailVerificationPage() {
     const [searchParams] = useSearchParams();
     const [status, setStatus] = useState('loading'); // 'loading', 'success', 'check', 'error'
-    const [message, setMessage] = useState('');
     const hasRun = useRef(false); // Ref to track if useEffect has run
 
     
@@ -27,7 +21,6 @@ export default function EmailVerificationPage() {
         const token = searchParams.get('token');
         if (!token) {
             setStatus('check');
-            setMessage('No token provided. Please check your email for the verification link.');
             return;
         } else {
             verifyEmail();
@@ -41,7 +34,6 @@ export default function EmailVerificationPage() {
             } catch (error) {
                 console.error("Email verification failed:", error);
                 setStatus('error');
-                setMessage('Verification failed. The link may be invalid or expired.');
             }
         };
 
