@@ -23,8 +23,14 @@ public class User implements UserDetails {
 
     @Column(length = 512)
     private String verificationToken;
-
     private LocalDateTime tokenExpiry;
+
+    @Column(name = "reset_token", length = 512)
+    private String resetToken;
+    @Column(name = "reset_token_expiry")
+    private LocalDateTime resetTokenExpiry;
+
+    @Column(length = 512)
     // one user -> many todos
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Todo> todos = new ArrayList<>();
