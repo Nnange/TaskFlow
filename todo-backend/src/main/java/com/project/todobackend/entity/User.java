@@ -84,6 +84,22 @@ public class User implements UserDetails {
         this.todos = todos;
     }
 
+    public String getResetToken() {
+        return resetToken;
+    }
+
+    public void setResetToken(String resetToken) {
+        this.resetToken = resetToken;
+    }
+
+    public LocalDateTime getResetTokenExpiry() {
+        return resetTokenExpiry;
+    }
+
+    public void setResetTokenExpiry(LocalDateTime resetTokenExpiry) {
+        this.resetTokenExpiry = resetTokenExpiry;
+    }
+
     // Required by UserDetails
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

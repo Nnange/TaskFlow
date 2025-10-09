@@ -1,7 +1,9 @@
 package com.project.todobackend.controller;
 
 import com.project.todobackend.DTOs.AuthRequest;
+import com.project.todobackend.DTOs.ForgotPasswordRequest;
 import com.project.todobackend.DTOs.LoginResponse;
+import com.project.todobackend.DTOs.ResetPasswordRequest;
 import com.project.todobackend.config.JwtUtil;
 import com.project.todobackend.entity.User;
 import com.project.todobackend.repository.UserRepository;
@@ -106,6 +108,47 @@ public class AuthController {
         userRepository.save(user);
 
         return ResponseEntity.ok("Account verified successfully! You can now log in.");
+    }
+
+    @PostMapping("forgot-password")
+    public ResponseEntity<String> forgotPassword(@RequestBody ForgotPasswordRequest request) {
+        User user = userRepository.findByEmail(request.getEmail()).orElseThrow(()-> new RuntimeException("User not found"));
+
+        String token = jwtUtil.generateToken(user.getEmail());
+        user.setResetToken(token);
+        user.setResetTokenExpiry(LocalDateTime.now().plusMinutes(10)); // valid for 10 minutes
+        userRepository.save(user);
+
+        // TODO: send email with link
+        String resetLink = "http://localhost:5173/auth/forgot-password?token=" + token;
+        emailService.sendEmail(user.getEmail(),
+                "Password reset",
+                "Click this link to reset password: " + resetLink);
+
+        return ResponseEntity.ok("Password reset link sent to your email.");
+    }
+
+    @PostMapping("reset-password")
+    public ResponseEntity<String> resetPassword(@RequestBody ResetPasswordRequest request) {
+        Optional<User> optionalUser = userRepository.findByResetToken(request.getToken());
+
+        if (optionalUser.isEmpty()) {
+            System.out.println("No user found with this token!");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid verification token");
+        }
+        User user = optionalUser.get();
+
+        if (user.getResetTokenExpiry() == null || user.getResetTokenExpiry().isBefore(LocalDateTime.now())) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Reset token has expired");
+        }
+
+        user.setPassword(passwordEncoder.encode(request.getNewPassword()));
+        user.setResetToken(null);
+        user.setResetTokenExpiry(null);
+        userRepository.save(user);
+
+        return ResponseEntity.ok("Password reset successfully.");
+
     }
 
 }
