@@ -17,31 +17,31 @@ export function ForgotPasswordPage() {
     const [showPassword, setShowPassword] = useState(false);
     const [doesPasswordMatch, setDoesPasswordMatch] = useState(true);
     const [error, setError] = useState("");
-    const [token, setToken] = useState("");
-    const [status, setStatus] = useState("resetting");
+    const [token, setToken] = useState<string | null>("");
+    const [status, setStatus] = useState("");
 
     const navigate = useNavigate();
     const [searchParams] = useSearchParams();
     const hasRun = useRef(false); // Ref to track if useEffect has run
 
     useEffect(() => {
-        //if (hasRun.current) return; // prevent double execution
-        //hasRun.current = true;
-
+        if (hasRun.current) return; // prevent double execution
+        hasRun.current = true;
+        
         const token = searchParams.get('token');
-        setToken(token ? token : "");
-
+        setToken(token ? token : null);
         if (!token) {
-            //setStatus("");
+            setStatus("");
             return;
         } else {
-            
+            setStatus("resetting");
         }
             
-    }, []);
+    }, [searchParams]);
 
-    const checkPasswordMatch = () => {  
+    const checkPasswordMatch = () => {
         if (password !== confirmPassword && confirmPassword !== "") {
+            setError("");
             setDoesPasswordMatch(false);
         } else {
             setDoesPasswordMatch(true);
@@ -67,19 +67,40 @@ export function ForgotPasswordPage() {
     }
 
 
-    async function handlePasswordSubmit(): Promise<void> {
+    async function handlePasswordSubmit(event: React.FormEvent<HTMLFormElement>): Promise<void> {
+        event.preventDefault();
+
+        if (!password || !confirmPassword) {
+            setError("Please fill in all password fields.");
+            return;
+        }
+        if (!doesPasswordMatch) {
+            setError("Passwords do not match.");
+            return;
+        }
+        if (!token) {
+            setError("Invalid or missing token.");
+            return;
+        }
         var data = {
             token: token,
-            newPassword: doesPasswordMatch ? password : ""
+            newPassword: password
         }
-        console.log(data)
         try {
-            setStatus('resetting');
-            await api.post('/auth/reset-password', data);
+            setStatus('loading');
+            await api.post('/auth/reset-password', data)
+                .then(res => {
+                    setStatus('successPasswordReset');
+                })
+                .catch(err => {
+                    setStatus('resetting');
+                    setError("Password reset failed. The link may be invalid or expired.");
+                    throw err;
+                })
             setStatus('success');
         } catch (error) {
-            console.error("Email verification failed:", error);
-            setStatus('error');
+            setError("Password reset failed. The link may be invalid or expired.");
+            console.error("Password Reset failed:", error);
         }
     }
 
@@ -94,7 +115,7 @@ export function ForgotPasswordPage() {
                                 <span className="text-xl font-thin">Forgot Password</span>
                         </header>
         
-                        <form onSubmit={handleSubmit} className="p-6 flex flex-col gap-y-8">
+                        <form id="emailFormForPasswordReset" onSubmit={handleSubmit} className="p-6 flex flex-col gap-y-8">
                             {error && (
                                 <div className="flex justify-between items-center p-3 bg-red-100 text-red-700 rounded-md">
                                     <p>{error}</p>
@@ -169,6 +190,23 @@ export function ForgotPasswordPage() {
                         </div>
                     </div>
                 )}
+                {status === "successPasswordReset" && (
+                    <div className="border rounded-lg mx-4 bg-white sm:mx-4 my-12  shadow-md text-black max-w-full md:w-3/4 lg:w-1/2">
+                        <header className="text-white rounded-t-lg p-3 flex flex-col items-center justify-center gap-2
+                                bg-linear-to-r/hsl from-indigo-500 to-teal-400">
+                                <span className="text-3xl font-bold flex items-center gap-x-1"> <MdOutlineTaskAlt size={25} />TaskFlow</span>
+                                <span className="text-xl font-thin">Forgot Password</span>
+                        </header>
+        
+                        <div className="p-6 flex flex-col items-center gap-y-8">
+                            
+                            <p className="text-center w-1/2">
+                                Your password has been successfully reset. You can now <a href="/login" className="text-blue-600 hover:underline cursor-pointer">log in</a> with your new password.
+                            </p>
+                            
+                        </div>
+                    </div>
+                )}
 
                 {status === "loading" && 
                     <Loader />
@@ -182,7 +220,7 @@ export function ForgotPasswordPage() {
                                 <span className="text-xl font-thin">Forgot Password</span>
                         </header>
         
-                        <form onSubmit={handlePasswordSubmit} className="p-6 flex flex-col gap-y-8">
+                        <form id="confirmPasswordForm" onSubmit={handlePasswordSubmit} className="p-6 flex flex-col gap-y-8">
                             {error && (
                                 <div className="flex justify-between items-center p-3 bg-red-100 text-red-700 rounded-md">
                                     <p>{error}</p>
@@ -195,16 +233,17 @@ export function ForgotPasswordPage() {
                             )}
                             {/* PASSWORD */}
                             <div>
-                                <label htmlFor="password">Password</label>
-                                <div id="password" className="flex items-center bg-gray-50 rounded-lg overflow-hidden shadow-sm border border-gray-200 focus-within:ring-2 focus-within:ring-blue-500 focus-within:border-blue-500 transition-all">
+                                <label htmlFor="password">New Password</label>
+                                <div  className="flex items-center bg-gray-50 rounded-lg overflow-hidden shadow-sm border border-gray-200 focus-within:ring-2 focus-within:ring-blue-500 focus-within:border-blue-500 transition-all">
                                     <div className=" p-3 ">
                                         <FiKey   size={25} />
                                     </div>
                                     <input
+                                        id="password"
                                         type={showPassword ? "text" : "password"}
                                         value={password}
                                         onChange={(e) => setPassword(e.target.value)}
-                                        placeholder="Enter your password..."
+                                        placeholder="Enter a new password..."
                                         className="flex-1 pr- py-3 bg-transparent focus:outline-none"
                                     />
                                     {!showPassword && 
@@ -226,13 +265,14 @@ export function ForgotPasswordPage() {
                             </div>
                             {/* Confirm PASSWORD */}
                             <div>
-                                <label htmlFor="password">Confirm Password</label>
-                                <div id="password" className={"flex items-center bg-gray-50 rounded-lg overflow-hidden shadow-sm border border-gray-200 focus-within:ring-2 focus-within:ring-blue-500 focus-within:border-blue-500 transition-all" 
+                                <label htmlFor="confirmpassword">Confirm Password</label>
+                                <div  className={"flex items-center bg-gray-50 rounded-lg overflow-hidden shadow-sm border border-gray-200 focus-within:ring-2 focus-within:ring-blue-500 focus-within:border-blue-500 transition-all" 
                                     + (doesPasswordMatch ? "" : " border-red-500 ring-red-500 focus-within:ring-red-500 focus-within:border-red-500 transition-all")}>
                                     <div className=" p-3 ">
                                         <FiKey   size={25} />
                                     </div>
                                     <input
+                                        id="confirmpassword"
                                         type={showRepeatPassword ? "text" : "password"}
                                         value={confirmPassword}
                                         onChange={(e) => {setConfirmPassword(e.target.value);}}
@@ -267,6 +307,12 @@ export function ForgotPasswordPage() {
                                     Submit
                                 </button> 
                             </div>
+
+                            <div className="text-center text-sm text-gray-600">
+                                <a href="/forgot-password" type="button" className="text-blue-600 hover:underline cursor-pointer">
+                                    Request another link
+                                </a>
+                            </div>  
                         </form>
                     </div>
                 )}

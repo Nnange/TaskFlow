@@ -121,7 +121,7 @@ export function LoginPage () {
                              />
                             <label htmlFor="remember" className="text-sm text-gray-600">Remember me</label>
                         </div>
-                        <a href="#" className="text-sm text-blue-600 hover:underline">Forgot password?</a>
+                        <p onClick={() => navigate("/forgot-password")} className="text-sm text-blue-600 hover:underline cursor-pointer">Forgot password?</p>
                     </div>
                     <div>
                         <button type="submit" className="w-full bg-green-500 hover:bg-green-600 text-white py-3 rounded-lg transition-colors">

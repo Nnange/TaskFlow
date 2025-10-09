@@ -122,7 +122,7 @@ public class AuthController {
         userRepository.save(user);
 
         // TODO: send email with link
-        String resetLink = "http://localhost:5173/auth/forgot-password?token=" + token;
+        String resetLink = "http://localhost:5173/forgot-password?token=" + token;
         emailService.sendEmail(user.getEmail(),
                 "Password reset",
                 "Click this link to reset password: " + resetLink);
@@ -141,11 +141,11 @@ public class AuthController {
         User user = optionalUser.get();
 
         if (user.getResetTokenExpiry() == null || user.getResetTokenExpiry().isBefore(LocalDateTime.now())) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Reset token has expired");
+            throw new ApiRequestException("Reset token has expired");
         }
 
         if (request.getNewPassword().isEmpty()){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Password cannot be empty");
+            throw new ApiRequestException("Password cannot be empty");
         }
 
         user.setPassword(passwordEncoder.encode(request.getNewPassword()));
