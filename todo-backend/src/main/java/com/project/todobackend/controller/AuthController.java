@@ -6,6 +6,7 @@ import com.project.todobackend.DTOs.LoginResponse;
 import com.project.todobackend.DTOs.ResetPasswordRequest;
 import com.project.todobackend.config.JwtUtil;
 import com.project.todobackend.entity.User;
+import com.project.todobackend.exceptions.ApiRequestException;
 import com.project.todobackend.repository.UserRepository;
 import com.project.todobackend.service.EmailService;
 import com.project.todobackend.service.MyUserDetailsService;
@@ -110,9 +111,10 @@ public class AuthController {
         return ResponseEntity.ok("Account verified successfully! You can now log in.");
     }
 
-    @PostMapping("forgot-password")
-    public ResponseEntity<String> forgotPassword(@RequestBody ForgotPasswordRequest request) {
-        User user = userRepository.findByEmail(request.getEmail()).orElseThrow(()-> new RuntimeException("User not found"));
+    @PostMapping("/forgot-password")
+    public ResponseEntity<String> forgotPassword(@RequestBody ForgotPasswordRequest request) throws ApiRequestException {
+        User user = userRepository.findByEmail(request.getEmail())
+                .orElseThrow(()-> new ApiRequestException("Email not found. Please try again."));
 
         String token = jwtUtil.generateToken(user.getEmail());
         user.setResetToken(token);
@@ -128,18 +130,22 @@ public class AuthController {
         return ResponseEntity.ok("Password reset link sent to your email.");
     }
 
-    @PostMapping("reset-password")
-    public ResponseEntity<String> resetPassword(@RequestBody ResetPasswordRequest request) {
+    @PostMapping("/reset-password")
+    public ResponseEntity<String> resetPassword(@RequestBody ResetPasswordRequest request) throws ApiRequestException {
         Optional<User> optionalUser = userRepository.findByResetToken(request.getToken());
 
         if (optionalUser.isEmpty()) {
             System.out.println("No user found with this token!");
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid verification token");
+            throw new ApiRequestException("No token found. Please try again.");
         }
         User user = optionalUser.get();
 
         if (user.getResetTokenExpiry() == null || user.getResetTokenExpiry().isBefore(LocalDateTime.now())) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Reset token has expired");
+        }
+
+        if (request.getNewPassword().isEmpty()){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Password cannot be empty");
         }
 
         user.setPassword(passwordEncoder.encode(request.getNewPassword()));
