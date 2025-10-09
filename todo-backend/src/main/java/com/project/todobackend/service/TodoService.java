@@ -8,6 +8,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 /*
@@ -18,7 +19,7 @@ If later you add things like authentication, validation, or notifications, you p
 📌 Role: The logic brain that decides what happens before talking to the database.
 */
 @Service
-public class TodoService {
+public class    TodoService {
     private final TodoRepository todoRepository;
 
     public TodoService(TodoRepository todoRepository) {
@@ -36,12 +37,12 @@ public class TodoService {
         Todo saved = todoRepository.save(TodoMapper.toEntity(dto));
         return TodoMapper.toDTO(saved);
     }
-    public TodoDTO updateTodo(Long id, TodoDTO updatedDto){
+    public TodoDTO updateTodo(UUID id, TodoDTO updatedDto){
         updatedDto.setId(id);
         Todo saved = todoRepository.save(TodoMapper.toEntity(updatedDto));
         return TodoMapper.toDTO(saved);
     }
-    public void deleteTodo(Long id){
+    public void deleteTodo(UUID id){
         todoRepository.deleteById(id);
     }
     @Transactional

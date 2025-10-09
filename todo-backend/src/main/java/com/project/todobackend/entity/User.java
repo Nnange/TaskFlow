@@ -1,28 +1,24 @@
 package com.project.todobackend.entity;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.GenericGenerator;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 @Entity
 @Table(name = "users")
 public class User implements UserDetails {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
+    @GeneratedValue(generator = "UUID")
+    @Column(updatable = false, nullable = false)
+    private UUID id;
     private String username;
     private String email;
     private String password;
-
     private String role = "USER";
-
     private boolean enabled = false;
 
     @Column(length = 512)
@@ -32,6 +28,11 @@ public class User implements UserDetails {
     // one user -> many todos
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Todo> todos = new ArrayList<>();
+
+    // Getters and setters
+    public UUID getId() { return id; }
+
+    public void setId(UUID id) { this.id = id; }
 
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
@@ -51,14 +52,6 @@ public class User implements UserDetails {
 
     public void setTokenExpiry(LocalDateTime tokenExpiry) {
         this.tokenExpiry = tokenExpiry;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public void setUsername(String username) {

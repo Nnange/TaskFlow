@@ -5,14 +5,14 @@ import { IoIosCheckmarkCircleOutline } from "react-icons/io";
 import { MdCheck } from "react-icons/md";
 
 interface Todo {
-  id: number
+  id: string
   task: string
   completed: boolean
 }
 interface TodoItemProps {
   todo: Todo
-  onToggle: (id: number) => void
-  onDelete: (id: number) => void
+  onToggle: (id: string) => void
+  onDelete: (id: string) => void
 }
 export const TodoItem = ({ todo, onToggle, onDelete }: TodoItemProps) => {
   return (

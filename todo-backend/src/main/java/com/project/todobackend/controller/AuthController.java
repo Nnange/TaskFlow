@@ -1,6 +1,7 @@
 package com.project.todobackend.controller;
 
 import com.project.todobackend.DTOs.AuthRequest;
+import com.project.todobackend.DTOs.LoginResponse;
 import com.project.todobackend.config.JwtUtil;
 import com.project.todobackend.entity.User;
 import com.project.todobackend.repository.UserRepository;
@@ -28,6 +29,7 @@ public class AuthController {
     private final EmailService emailService;
     private final JwtUtil jwtUtil;
     private final UserDetailsService userDetailsService;
+    private final MyUserDetailsService myUserDetailsService;
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
@@ -36,12 +38,14 @@ public class AuthController {
             EmailService emailService,
             PasswordEncoder passwordEncoder,
             UserDetailsService userDetailsService,
+            MyUserDetailsService myUserDetailsService,
             JwtUtil jwtUtil,
             AuthenticationManager authenticationManager) {
         this.userRepository = userRepository;
         this.emailService = emailService;
         this.passwordEncoder = passwordEncoder;
         this.userDetailsService = userDetailsService;
+        this.myUserDetailsService = myUserDetailsService;
         this.jwtUtil = jwtUtil;
     }
 
@@ -55,7 +59,7 @@ public class AuthController {
 
         User savedUser = userRepository.save(user);
 
-        String token = jwtUtil.generateToken(savedUser.getUsername());
+        String token = jwtUtil.generateToken(savedUser.getEmail());
         savedUser.setVerificationToken(token);
         savedUser.setTokenExpiry(LocalDateTime.now().plusHours(24));
         userRepository.save(savedUser);
@@ -69,22 +73,20 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public String login(@RequestBody AuthRequest request) throws Exception {
-        System.out.println("login function");
-        var userDetails = userDetailsService.loadUserByUsername(request.getUsername());
-        System.out.println("userDetails: " + userDetails);
+    public LoginResponse login(@RequestBody AuthRequest request) throws Exception {
+        var userDetails = myUserDetailsService.loadUserByUsername(request.getEmail());
 
         if(!passwordEncoder.matches(request.getPassword(), userDetails.getPassword())) {
             throw new Exception("Incorrect username or password");
         }
-        // generate JWT
-        return jwtUtil.generateToken(userDetails);
+        var token = jwtUtil.generateToken(userDetails);
+
+        User user = userRepository.findByEmail(request.getEmail()).orElseThrow(() -> new Exception("User not found"));
+        return new LoginResponse(token, user.getUsername());
     }
 
     @GetMapping("/verify")
     public ResponseEntity<String> verifyAccount(@RequestParam String token) {
-        System.out.println("Received token: " + token);
-
         Optional<User> optionalUser = userRepository.findByVerificationToken(token);
 
         if (optionalUser.isEmpty()) {

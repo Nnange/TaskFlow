@@ -69,7 +69,7 @@ export const todoApi = {
     return response.data
   },
   // Delete a todo
-  deleteTodo: async (id: number): Promise<void> => {
+  deleteTodo: async (id: string): Promise<void> => {
     await api.delete(`/api/todos/${id}`)
   },
   // Clear all completed todos

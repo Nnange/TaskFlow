@@ -15,7 +15,7 @@ export function Header() {
       "null"
     );
 
-    const username = useSelector((state: RootState) => state.auth.user) || savedAuth?.user || "Guest";
+    const email = useSelector((state: RootState) => state.auth.user) || savedAuth?.username || "Guest";
 
   return (
     <header className="text-black p-3 bg-white w-full flex items-center justify-between">
@@ -23,7 +23,7 @@ export function Header() {
             <span className="text-3xl font-bold">TaskFlow</span>
         </div>
         <div className="flex items-center gap-6">
-            <span className="text-black underline">Welcome {username}!</span>
+            <span className="text-black underline">Welcome {email}!</span>
             <button className="bg-green-500 p-3 rounded-lg cursor-pointer text-white"
                 onClick={() => {
                     dispatch(logout())

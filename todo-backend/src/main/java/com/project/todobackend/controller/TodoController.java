@@ -13,6 +13,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @RestController
@@ -27,8 +28,8 @@ public class TodoController {
 
     @GetMapping
     public List<TodoResponse> getTodos(Authentication authentication) {
-        String username = authentication.getName(); // logged-in username
-        User user = userRepository.findByUsername(username).orElseThrow();
+        String email = authentication.getName(); // logged-in username
+        User user = userRepository.findByEmail(email).orElseThrow();
         return todoRepository.findByUser(user)
                 .stream()
                 .map(todo -> new TodoResponse(todo.getId(), todo.getTask(), todo.isCompleted()))
@@ -37,8 +38,8 @@ public class TodoController {
 
     @PostMapping
     public TodoResponse createTodo(@RequestBody Todo todo, Authentication authentication) {
-        String username = authentication.getName();
-        User user = userRepository.findByUsername(username).orElseThrow();
+        String email = authentication.getName();
+        User user = userRepository.findByEmail(email).orElseThrow();
 
         todo.setUser(user); // assign todo to this user
         Todo saved =  todoRepository.save(todo);
@@ -47,9 +48,9 @@ public class TodoController {
     }
 
     @PutMapping("/{id}")
-    public TodoResponse updateTodo(@PathVariable Long id, @RequestBody Todo updatedTodo, Authentication authentication) {
-        String username = authentication.getName();
-        User user = userRepository.findByUsername(username).orElseThrow();
+    public TodoResponse updateTodo(@PathVariable UUID id, @RequestBody Todo updatedTodo, Authentication authentication) {
+        String email = authentication.getName();
+        User user = userRepository.findByEmail(email).orElseThrow();
 
         Todo todo = todoRepository.findById(id).orElseThrow();
         if (!todo.getUser().getId().equals(user.getId())) {
@@ -64,9 +65,9 @@ public class TodoController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteTodo(@PathVariable Long id, Authentication authentication) {
-        String username = authentication.getName();
-        User user = userRepository.findByUsername(username).orElseThrow();
+    public ResponseEntity<?> deleteTodo(@PathVariable UUID id, Authentication authentication) {
+        String email = authentication.getName();
+        User user = userRepository.findByEmail(email).orElseThrow();
 
         Todo todo = todoRepository.findById(id).orElseThrow();
         if (!todo.getUser().getId().equals(user.getId())) {
@@ -80,8 +81,8 @@ public class TodoController {
 
     @DeleteMapping("/completed")
     public  ResponseEntity<?> deleteAllCompleted(Authentication authentication) {
-        String username = authentication.getName();
-        User user = userRepository.findByUsername(username).orElseThrow();
+        String email = authentication.getName();
+        User user = userRepository.findByEmail(email).orElseThrow();
 
         todoRepository.deleteCompletedTodos();
 

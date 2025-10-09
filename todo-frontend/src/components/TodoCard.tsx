@@ -47,7 +47,7 @@ function TodoCard() {
       }
     }
   }
-  const toggleTodo = async (id: number) => {
+  const toggleTodo = async (id: string) => {
     try {
       setError("")
       const todoToUpdate = todos.find((todo) => todo.id === id)
@@ -59,7 +59,7 @@ function TodoCard() {
       setError('Failed to update todo. Please try again.')
     }
   }
-  const deleteTodo = async (id: number) => {
+  const deleteTodo = async (id: string) => {
     try {
       setError("")
       await todoApi.deleteTodo(id)

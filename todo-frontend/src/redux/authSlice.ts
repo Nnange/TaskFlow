@@ -25,15 +25,16 @@ const authSlice = createSlice({
       state.user = action.payload.user;
       state.email = action.payload.email;;
     },
-    login: (state, action: PayloadAction<{ token: string; user: string}>) => {
+    login: (state, action: PayloadAction<{ token: string; email: string; username: string}>) => {
       state.isAuthenticated = true;
       state.token = action.payload.token;
-      state.user = action.payload.user;
+      state.email = action.payload.email;
+      state.user = action.payload.username;
     },
     logout: (state) => {
       state.isAuthenticated = false;
       state.token = null;
-      state.user = "";
+      state.email = "";
       localStorage.removeItem("auth");
       sessionStorage.removeItem("auth");
     },

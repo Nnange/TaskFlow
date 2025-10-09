@@ -13,7 +13,7 @@ import { useNavigate } from "react-router-dom";
 
 
 export function LoginPage () {
-    const [username, setUsername] = useState("");
+    const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [showPassword, setShowPassword] = useState(false);
     const [rememberMe, setRememberMe] = useState(false);
@@ -26,8 +26,8 @@ export function LoginPage () {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         try {
-            const response = await Login({ username, password});
-            dispatch(login({ token: response, user: username }));
+            const response = await Login({ email, password});
+            dispatch(login({ token: response.token, email, username: response.username }));
             if (rememberMe) {
                 localStorage.setItem("auth", JSON.stringify(store.getState().auth));
             } else {
@@ -64,15 +64,15 @@ export function LoginPage () {
                     )}
                     {/* USERNAME */}
                     <div>
-                        <label htmlFor="username">Username</label>
-                        <div id="username" className="flex items-center bg-gray-50 rounded-lg overflow-hidden shadow-sm border border-gray-200 focus-within:ring-2 focus-within:ring-blue-500 focus-within:border-blue-500 transition-all">
+                        <label htmlFor="email">Email</label>
+                        <div id="email" className="flex items-center bg-gray-50 rounded-lg overflow-hidden shadow-sm border border-gray-200 focus-within:ring-2 focus-within:ring-blue-500 focus-within:border-blue-500 transition-all">
                             <div className=" p-3 ">
                                 <LuUser  size={25} />
                             </div>
                             <input
-                                type="text"
-                                value={username}
-                                onChange={(e) => setUsername(e.target.value)}
+                                type="email"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
                                 placeholder="Enter your username..."
                                 className="flex-1 pr- py-3 bg-transparent focus:outline-none"
                             />

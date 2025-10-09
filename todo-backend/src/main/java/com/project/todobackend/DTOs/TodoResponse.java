@@ -1,21 +1,23 @@
 package com.project.todobackend.DTOs;
 
+import java.util.UUID;
+
 public class TodoResponse {
-    private Long id;
+    private UUID id;
     private String task;
     private boolean completed;
 
-    public TodoResponse(Long id, String task, boolean completed) {
+    public TodoResponse(UUID id, String task, boolean completed) {
         this.id = id;
         this.task = task;
         this.completed = completed;
     }
 
-    public Long getId() {
+    public UUID getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 

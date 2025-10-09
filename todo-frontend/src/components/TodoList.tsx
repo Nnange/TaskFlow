@@ -1,14 +1,14 @@
 import React from 'react'
 import { TodoItem } from './TodoItem'
 interface Todo {
-  id: number
+  id: string
   task: string
   completed: boolean
 }
 interface TodoListProps {
   todos: Todo[]
-  onToggle: (id: number) => void
-  onDelete: (id: number) => void
+  onToggle: (id: string) => void
+  onDelete: (id: string) => void
 }
 export const TodoList = ({ todos, onToggle, onDelete }: TodoListProps) => {
   if (todos.length === 0) {
