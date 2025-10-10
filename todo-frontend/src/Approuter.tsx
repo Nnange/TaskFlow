@@ -6,6 +6,7 @@ import { RootState } from "./redux/store";
 import Register from "./pages/Register";
 import EmailVerificationPage from "./pages/EmailVerificationPage";
 import { ForgotPasswordPage } from "./pages/ForgotPasswordPage";
+import { useAuthExpiration } from "./services/UseAuthExpiration.service";
 
 
 export default function AppRouter() {
@@ -15,7 +16,17 @@ export default function AppRouter() {
       "null"
     );
     const isAuthenticated = useSelector((state: RootState) => state.auth.isAuthenticated) || (savedAuth?.token !== null) && (savedAuth?.token !== undefined);
+    const token = savedAuth?.token;
     
+    const handleLogout = () => {
+      localStorage.removeItem("auth");
+      sessionStorage.removeItem("auth");
+      window.location.href = '/login';
+    };
+    // Use the custom hook to handle token expiration
+    useAuthExpiration(token, handleLogout);
+    
+
   return (
     <BrowserRouter>
         <Routes>
