@@ -68,6 +68,13 @@ export const todoApi = {
     })
     return response.data
   },
+  // Edit a todo
+  editTodo: async (id: string, task: string): Promise<Todo> => {
+    const response = await api.put(`/api/todos/${id}`, {
+      task,
+    })
+    return response.data
+  },
   // Delete a todo
   deleteTodo: async (id: string): Promise<void> => {
     await api.delete(`/api/todos/${id}`)

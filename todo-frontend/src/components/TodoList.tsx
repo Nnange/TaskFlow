@@ -9,8 +9,9 @@ interface TodoListProps {
   todos: Todo[]
   onToggle: (id: string) => void
   onDelete: (id: string) => void
+  onEdit: (id: string, updatedText: string) => void
 }
-export const TodoList = ({ todos, onToggle, onDelete }: TodoListProps) => {
+export const TodoList = ({ todos, onToggle, onDelete, onEdit }: TodoListProps) => {
   if (todos.length === 0) {
     return (
       <div className="py-8 text-center text-gray-500">
@@ -26,6 +27,7 @@ export const TodoList = ({ todos, onToggle, onDelete }: TodoListProps) => {
           todo={todo}
           onToggle={onToggle}
           onDelete={onDelete}
+          onEdit={onEdit}
         />
       ))}
     </div>

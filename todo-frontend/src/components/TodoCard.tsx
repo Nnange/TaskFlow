@@ -59,6 +59,20 @@ function TodoCard() {
       setError('Failed to update todo. Please try again.')
     }
   }
+  const editTodo = async (id: string, updatedText: string) => {
+    try {
+      setError("")
+      const todoToUpdate = todos.find((todo) => todo.id === id)
+      if (!todoToUpdate) return
+      const updatedTask = "updated task" //prompt("Edit task:", todoToUpdate.task);
+      if (updatedText === null || updatedText.trim() === "") return; // User cancelled or entered empty task
+      const updatedTodo = await todoApi.editTodo(id, updatedText);
+      setTodos(todos.map((todo) => (todo.id === id ? updatedTodo : todo)));
+    } catch (err) {
+      console.error('Failed to edit todo:', err)
+      setError('Failed to edit todo. Please try again.')
+    }
+  }
   const deleteTodo = async (id: string) => {
     try {
       setError("")
@@ -115,6 +129,7 @@ function TodoCard() {
               todos={filteredTodos}
               onToggle={toggleTodo}
               onDelete={deleteTodo}
+              onEdit={editTodo}
             />
             <TodoCardFooter
               activeCount={activeTodoCount}
