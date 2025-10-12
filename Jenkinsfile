@@ -43,12 +43,18 @@ pipeline {
                 dir(BACKEND_DIR) {
                     //  withCredentials passes sensitive information
                     withCredentials([
-                    string(credentialsId: 'DB_PASSWORD', variable: 'SPRING_DATASOURCE_PASSWORD')
+                    string(credentialsId: 'DB_PASSWORD', variable: 'SPRING_DATASOURCE_PASSWORD'),
+                    string(credentialsId: 'Gmail_Password', variable: 'GMAIL_PASSWORD'),
+                    string(credentialsId: 'JWT_SECRET_KEY', variable: 'JWT_SECRET_KEY')
                 ]){
 
                     // Create secrets.properties dynamically
                     sh '''
-                        echo "spring.datasource.password=${SPRING_DATASOURCE_PASSWORD}" > src/main/resources/secrets.properties
+                        cat > src/main/resources/secrets.properties <<EOF
+                        spring.datasource.password=${SPRING_DATASOURCE_PASSWORD}
+                        gmail.password=${GMAIL_PASSWORD}
+                        SECRET_KEY=${JWT_SECRET_KEY}
+                        EOF
                     '''
                     sh 'mvn clean'  
                     sh 'mvn package -DskipTests'
@@ -76,6 +82,9 @@ pipeline {
     }
 
     post {
+        always {
+            sh 'rm -f src/main/resources/secrets.properties'
+        }
         success {
             echo '✅ Deployment successful!'
         }
