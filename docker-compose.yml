@@ -22,7 +22,7 @@ services:
     build:
       context: ./todo-frontend
       args:
-        - ENV_FILE=${PROFILE}
+        VITE_API_URL: "${API_URL}"
       dockerfile: Dockerfile
     container_name: todo_frontend
     volumes:

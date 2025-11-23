@@ -9,11 +9,11 @@ COPY package.json package-lock.json* ./
 RUN npm install
 
 COPY . .
+# Pass the env file content directly to Vite
+ARG VITE_API_URL
+ENV VITE_API_URL=${VITE_API_URL}
 
-# Copy correct env file before build
-ARG ENV_FILE=dev
-COPY env/.env.${ENV_FILE} .env
-
+RUN echo "VITE_API_URL=${VITE_API_URL}" > .env
 RUN npm run build
 
 # Serve with Nginx
