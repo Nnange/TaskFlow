@@ -33,7 +33,7 @@ pipeline {
                 dir(FRONTEND_DIR) {
                     sh 'npm install'
                     sh 'npm run build'
-                    sh 'docker build -t $FRONTEND_IMAGE .'
+                    sh 'docker build -t $FRONTEND_IMAGE --build-arg ENV_FILE=${SPRING_PROFILE} .'
                 }
             }
         }
@@ -64,12 +64,12 @@ pipeline {
             }
         }
 
-        stage('Build Docker Images') {
-            steps {
-                // Build all services defined in docker-compose.yml
-                sh 'docker compose build'
-            }
-        }
+        // stage('Build Docker Images') {
+        //     steps {
+        //         // Build all services defined in docker-compose.yml
+        //         sh 'docker compose build'
+        //     }
+        // }
 
         stage('Deploy') {
             steps {

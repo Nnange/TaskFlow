@@ -9,6 +9,11 @@ COPY package.json package-lock.json* ./
 RUN npm install
 
 COPY . .
+
+# Copy correct env file before build
+ARG ENV_FILE=dev
+COPY env/.env.${ENV_FILE} .env
+
 RUN npm run build
 
 # Serve with Nginx

@@ -21,8 +21,12 @@ services:
     image: todo-frontend:latest
     build:
       context: ./todo-frontend
+      args:
+        - ENV_FILE=${PROFILE}
       dockerfile: Dockerfile
     container_name: todo_frontend
+    volumes:
+      - /home/akweh/Documents/todoEnv:/app/env 
     ports:
       - "3001:80"
     restart: unless-stopped
