@@ -33,18 +33,24 @@ pipeline {
                 dir(FRONTEND_DIR) {
                     sh 'npm install'
                     // This creates a symlink so Vite reads the correct .env file
+                    // THIS IS THE ONLY CORRECT VERSION
                     sh '''
                         rm -f .env
 
-                        if [ \"${PROFILE}\" = \"prod\" ]; then
-                            cp home/akweh/Documents/todoEnv/.env.prod .env
-                        elif [ \"${PROFILE}\" = \"dev\" ]; then
-                            cp home/akweh/Documents/todoEnv/.env.dev .env
-                        else
-                            cp home/akweh/Documents/todoEnv/.env.local .env
-                        fi
+                        case "${PROFILE}" in
+                            prod)
+                                cp /home/akweh/Documents/todoEnv/.env.prod .env
+                                ;;
+                            dev)
+                                cp /home/akweh/Documents/todoEnv/.env.dev .env
+                                ;;
+                            *)
+                                cp /home/akweh/Documents/todoEnv/.env.local .env
+                                ;;
+                        esac
 
-                        echo "Using env file:"
+                        echo "=== Selected PROFILE: ${PROFILE} ==="
+                        echo "=== Content of .env file ==="
                         cat .env
                     '''
                     sh 'npm run build'
