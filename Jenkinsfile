@@ -37,9 +37,9 @@ pipeline {
                     sh '''
                         rm -f .env
                         case "${PROFILE}" in
-                            prod)  cp /home/akweh/Documents/todoEnv/.env.prod  .env ;;
-                            dev)   cp /home/akweh/Documents/todoEnv/.env.dev   .env ;;
-                            *)     cp /home/akweh/Documents/todoEnv/.env.local .env ;;
+                            prod)  cp /opt/jenkins-env/.env.${PROFILE}  .env ;;
+                            dev)   cp /opt/jenkins-env/.env.${PROFILE}   .env ;;
+                            *)     cp /opt/jenkins-env/.env.${PROFILE} .env ;;
                         esac
                         echo "Using PROFILE=${PROFILE}"
                         cat .env
