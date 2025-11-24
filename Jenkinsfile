@@ -36,21 +36,12 @@ pipeline {
                     // THIS IS THE ONLY CORRECT VERSION
                     sh '''
                         rm -f .env
-
                         case "${PROFILE}" in
-                            prod)
-                                cp /home/akweh/Documents/todoEnv/.env.prod .env
-                                ;;
-                            dev)
-                                cp /home/akweh/Documents/todoEnv/.env.dev .env
-                                ;;
-                            *)
-                                cp /home/akweh/Documents/todoEnv/.env.local .env
-                                ;;
+                            prod)  cp /home/akweh/Documents/todoEnv/.env.prod  .env ;;
+                            dev)   cp /home/akweh/Documents/todoEnv/.env.dev   .env ;;
+                            *)     cp /home/akweh/Documents/todoEnv/.env.local .env ;;
                         esac
-
-                        echo "=== Selected PROFILE: ${PROFILE} ==="
-                        echo "=== Content of .env file ==="
+                        echo "Using PROFILE=${PROFILE}"
                         cat .env
                     '''
                     sh 'npm run build'
