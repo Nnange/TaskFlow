@@ -134,8 +134,14 @@ public class AuthController {
         user.setResetTokenExpiry(LocalDateTime.now().plusMinutes(10)); // valid for 10 minutes
         userRepository.save(user);
 
-        // TODO: send email with link
-        String resetLink = "http://localhost:5173/forgot-password?token=" + token;
+        String resetLink;
+        if (springProfile.equals("prod")) {
+            resetLink = "http://domain.example/forgort-password?token=" + token;
+        }  else if (springProfile.equals("dev")) {
+            resetLink = "http://192.168.178.36:3001/forgot-password?token=" + token;
+        } else {
+            resetLink = "http://localhost:5173/forgot-password?token=" + token;
+        }
         emailService.sendEmail(user.getEmail(),
                 "Password reset",
                 "Click this link to reset password: " + resetLink);
