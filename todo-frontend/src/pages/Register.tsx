@@ -40,6 +40,17 @@ export default function Register () {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setLoading(true);
+        let form: boolean = username !== "" && email !== "" && password !== "" && repeatPassword !== "";
+        if (!form) {
+            setError("Please fill in all fields.");
+            setLoading(false);
+            return;
+        }
+        if (!doesPasswordMatch) {
+            setError("");
+            setLoading(false);
+            return;
+        }
         try {
             const response = await SignUp({ username, email, password});
             dispatch(signup({ token: response, email: email, user: username }));
