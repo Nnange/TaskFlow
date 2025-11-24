@@ -11,6 +11,7 @@ import com.project.todobackend.repository.UserRepository;
 import com.project.todobackend.service.EmailService;
 import com.project.todobackend.service.MyUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -27,6 +28,9 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
+
+    @Value("${SPRING_PROFILE}")
+    private String springProfile;
 
     private AuthenticationManager authenticationManager;
     private final EmailService emailService;
@@ -66,8 +70,17 @@ public class AuthController {
         savedUser.setVerificationToken(token);
         savedUser.setTokenExpiry(LocalDateTime.now().plusHours(24));
         userRepository.save(savedUser);
+        String verifyUrl;
 
-        String verifyUrl = "http://localhost:5173/auth/verify?token=" + token;
+        if (springProfile.equals("prod")) {
+            verifyUrl = "http://domain.example/auth/verify?token=" + token;
+        }  else if (springProfile.equals("dev")) {
+            verifyUrl = "http://192.168.178.36:3001/auth/verify?token=" + token;
+        } else {
+            verifyUrl = "http://localhost:5173/auth/verify?token=" + token;
+        }
+
+
         emailService.sendEmail(savedUser.getEmail(),
                 "Verify your account",
                 "Click the link to verify: " + verifyUrl);
