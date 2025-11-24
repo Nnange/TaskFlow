@@ -19,12 +19,29 @@ pipeline {
         BACKEND_IMAGE = "todo-backend:latest"
         SPRING_PROFILE = "${PROFILE ?: 'dev'}"   // Jenkins param fallback
 
+        // This reads the git tag → becomes your app version
+        APP_VERSION = sh(
+            script: "git describe --tags --abbrev=0 --match 'v*.*.*' 2>/dev/null || echo '0.0.0'",
+            returnStdout: true
+        ).trim().replace('v', '')
+
+        IMAGE_TAG = "${APP_VERSION}-${BUILD_NUMBER}"
+        
+        // Optional: show in logs
+        FULL_INFO = "Version: ${APP_VERSION} | Build: ${BUILD_NUMBER} | Tag: ${IMAGE_TAG}"
+
     }
 
     stages {
         stage('Checkout') {
             steps {
                 git branch: 'main', url: 'https://github.com/Nnange/TaskFlow.git'
+            }
+        }
+
+        stage('Version Info') {
+            steps {
+                echo "${FULL_INFO}"
             }
         }
 
@@ -45,7 +62,7 @@ pipeline {
                         cat .env
                     '''
                     sh 'npm run build'
-                    sh 'docker build -t $FRONTEND_IMAGE .'
+                    sh 'docker build -t todo-frontend:${IMAGE_TAG} -t $FRONTEND_IMAGE .'
                 }
             }
         }
@@ -70,7 +87,7 @@ pipeline {
                     '''
                     sh 'mvn clean'  
                     sh 'mvn package -DskipTests'
-                    sh 'docker build -t ${BACKEND_IMAGE} .'
+                    sh 'docker build -t todo-backend:${IMAGE_TAG} -t ${BACKEND_IMAGE} .'
                     }
                 }
             }
