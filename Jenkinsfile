@@ -32,8 +32,14 @@ pipeline {
             steps {
                 dir(FRONTEND_DIR) {
                     sh 'npm install'
+                    // This creates a symlink so Vite reads the correct .env file
+                    sh '''
+                        rm -f .env
+                        ln -s /app/.env .env
+                        echo "Using env file: .env -> $(readlink -f .env || echo 'none')"
+                    '''
                     sh 'npm run build'
-                    sh 'docker build -t $FRONTEND_IMAGE --build-arg ENV_FILE=${SPRING_PROFILE} .'
+                    sh 'docker build -t $FRONTEND_IMAGE .'
                 }
             }
         }
