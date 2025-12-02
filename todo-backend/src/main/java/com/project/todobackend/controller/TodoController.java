@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -30,7 +31,7 @@ public class TodoController {
     public List<TodoResponse> getTodos(Authentication authentication) {
         String email = authentication.getName(); // logged-in username
         User user = userRepository.findByEmail(email).orElseThrow();
-        return todoRepository.findByUser(user)
+        return todoRepository.findByDeletedFalse(user)
                 .stream()
                 .map(todo -> new TodoResponse(todo.getId(), todo.getTask(), todo.isCompleted()))
                 .collect(Collectors.toList());
@@ -42,6 +43,7 @@ public class TodoController {
         User user = userRepository.findByEmail(email).orElseThrow();
 
         todo.setUser(user); // assign todo to this user
+        todo.setCreatedAt(LocalDateTime.now());
         Todo saved =  todoRepository.save(todo);
 
         return new TodoResponse(saved.getId(), saved.getTask(), saved.isCompleted());
@@ -89,4 +91,12 @@ public class TodoController {
         return ResponseEntity.ok("All completed Todos have been deleted!");
     }
 
+    @PatchMapping("/{id}/hide")
+    public ResponseEntity<?> hideTodo(@PathVariable UUID id, Authentication authentication) {
+        Todo todo = todoRepository.findById(id).orElseThrow();
+        todo.setDeleted(true);
+        todoRepository.save(todo);
+
+        return ResponseEntity.ok("Soft deleted Todos have been hidden!");
+    }
 }

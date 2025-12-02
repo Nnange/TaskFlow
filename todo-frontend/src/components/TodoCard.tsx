@@ -76,7 +76,7 @@ function TodoCard() {
   const deleteTodo = async (id: string) => {
     try {
       setError("")
-      await todoApi.deleteTodo(id)
+      await todoApi.softDeleteTodo(id)
       setTodos(todos.filter((todo) => todo.id !== id))
     } catch (err) {
       console.error('Failed to delete todo:', err)

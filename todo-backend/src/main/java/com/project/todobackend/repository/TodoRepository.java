@@ -14,6 +14,7 @@ public interface TodoRepository extends JpaRepository<Todo, UUID> {
     void deleteByCompletedTrue();
 
     List<Todo> findByUser(User user);
+    List<Todo> findByDeletedFalse(User user);
 
     @Transactional
     @Modifying

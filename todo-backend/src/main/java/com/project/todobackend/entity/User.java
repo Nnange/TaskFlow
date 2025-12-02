@@ -30,6 +30,8 @@ public class User implements UserDetails {
     @Column(name = "reset_token_expiry")
     private LocalDateTime resetTokenExpiry;
 
+    private LocalDateTime createdAt;
+
     @Column(length = 512)
     // one user -> many todos
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
@@ -98,6 +100,13 @@ public class User implements UserDetails {
 
     public void setResetTokenExpiry(LocalDateTime resetTokenExpiry) {
         this.resetTokenExpiry = resetTokenExpiry;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
     }
 
     // Required by UserDetails

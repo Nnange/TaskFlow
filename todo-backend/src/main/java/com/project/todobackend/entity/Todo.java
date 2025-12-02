@@ -1,8 +1,9 @@
 package com.project.todobackend.entity;
 
 import jakarta.persistence.*;
-import org.hibernate.annotations.GenericGenerator;
 
+import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.UUID;
 
 @Entity
@@ -19,9 +20,14 @@ public class Todo {
     @Column(nullable = false)
     private boolean completed = false;
 
+    @Column(nullable = false)
+    private boolean deleted = false;
+
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false) // foreign Key
     private User user;
+
+    private LocalDateTime createdAt;
 
     public String getTask() {
         return task;
@@ -54,4 +60,19 @@ public class Todo {
     public void setUser(User user) {
         this.user = user;
     }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public boolean isDeleted() {
+        return deleted;
+    }
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
+    }
+
 }

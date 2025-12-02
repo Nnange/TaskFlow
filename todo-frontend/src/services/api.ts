@@ -83,4 +83,9 @@ export const todoApi = {
   clearCompleted: async (): Promise<void> => {
     await api.delete('/api/todos/completed')
   },
+
+  //soft delete a todo
+  softDeleteTodo: async (id: string): Promise<void> => {
+    await api.patch(`/api/todos/${id}/hide`);
+  },
 }

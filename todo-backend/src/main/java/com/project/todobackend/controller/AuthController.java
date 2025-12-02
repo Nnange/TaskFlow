@@ -68,6 +68,7 @@ public class AuthController {
 
         String token = jwtUtil.generateToken(savedUser.getEmail());
         savedUser.setVerificationToken(token);
+        savedUser.setCreatedAt(LocalDateTime.now());
         savedUser.setTokenExpiry(LocalDateTime.now().plusHours(24));
         userRepository.save(savedUser);
         String verifyUrl;
