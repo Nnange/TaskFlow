@@ -1,6 +1,7 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
+import { playwright } from '@vitest/browser-playwright'
 
 
 // https://vite.dev/config/
@@ -9,4 +10,21 @@ export default defineConfig({
     react(),
     tailwindcss(),
   ],
+  test: {
+    name: 'todo-frontend-tests',
+    globals: true,
+    coverage: {
+      provider: 'v8',
+      reporter: [
+        ['lcov', {project: './coverage/lcov.info'}]
+      ],
+    },
+    include: ['src/tests/**/*.{test,spec}.{js,ts,jsx,tsx}'],
+    environment: 'jsdom',
+    exclude: [
+      '**/node_modules/**',
+      '**/dist/**',
+      './temp/**',
+    ],
+  },
 })

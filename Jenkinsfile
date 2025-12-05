@@ -61,6 +61,7 @@ pipeline {
                         echo "Using PROFILE=${PROFILE}"
                         cat .env
                     '''
+                    sh 'npm run test -- --coverage --reporter=lcov'
                     sh 'npm run build'
                     sh 'docker build -t todo-frontend:${IMAGE_TAG} -t $FRONTEND_IMAGE .'
                 }
