@@ -1,6 +1,5 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import { todoApi } from '../../services/api';
-import { api } from '../../services/api';
+import { todoApi, api } from '../../services/api';
 import AxiosMockAdapter from 'axios-mock-adapter';
 
 const mock = new AxiosMockAdapter(api);

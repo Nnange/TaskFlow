@@ -37,7 +37,7 @@ api.interceptors.response.use((response) => {
     // Handle unauthorized access, e.g., redirect to login
     console.error('Unauthorized! Redirecting to login...')
     store.dispatch(logout())
-    window.location.href = '/login'
+    globalThis.location.href = '/login'
   }
   return Promise.reject(error)
 })
@@ -45,14 +45,12 @@ api.interceptors.response.use((response) => {
 
 
 
-// API functions for todo operations
 export const todoApi = {
   // Get all todos
   getAllTodos: async (): Promise<Todo[]> => {
     const response = await api.get('/api/todos')
     return response.data
   },
-  // Add a new todo
   createTodo: async (text: string): Promise<Todo> => {
     const response = await api.post('/api/todos', {
       task: text, 
@@ -60,7 +58,6 @@ export const todoApi = {
     })
     return response.data
   },
-  // Toggle todo completion status
   toggleTodo: async (todo: Todo): Promise<Todo> => {
     const response = await api.put(`/api/todos/${todo.id}`, {
       ...todo,
@@ -68,23 +65,19 @@ export const todoApi = {
     })
     return response.data
   },
-  // Edit a todo
   editTodo: async (id: string, task: string): Promise<Todo> => {
     const response = await api.put(`/api/todos/${id}`, {
       task,
     })
     return response.data
   },
-  // Delete a todo
   deleteTodo: async (id: string): Promise<void> => {
     await api.delete(`/api/todos/${id}`)
   },
-  // Clear all completed todos
   clearCompleted: async (): Promise<void> => {
     await api.delete('/api/todos/completed')
   },
 
-  //soft delete a todo
   softDeleteTodo: async (id: string): Promise<void> => {
     await api.patch(`/api/todos/${id}/hide`);
   },
