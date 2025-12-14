@@ -8,6 +8,7 @@ export default defineConfig({
     react(),
     tailwindcss(),
   ],
+  base: '/',
   test: {
     name: 'todo-frontend-tests',
     globals: true,
