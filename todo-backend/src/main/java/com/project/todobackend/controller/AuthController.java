@@ -74,7 +74,7 @@ public class AuthController {
         String verifyUrl;
 
         if (springProfile.equals("prod")) {
-            verifyUrl = "http://domain.example/auth/verify?token=" + token;
+            verifyUrl = "https://taskflow.awongnnange.com/auth/verify?token=" + token;
         }  else if (springProfile.equals("dev")) {
             verifyUrl = "http://192.168.178.36:3001/auth/verify?token=" + token;
         } else {
@@ -137,7 +137,7 @@ public class AuthController {
 
         String resetLink;
         if (springProfile.equals("prod")) {
-            resetLink = "http://domain.example/forgort-password?token=" + token;
+            resetLink = "https://taskflow.awongnnange.com/forgot-password?token=" + token;
         }  else if (springProfile.equals("dev")) {
             resetLink = "http://192.168.178.36:3001/forgot-password?token=" + token;
         } else {
